@@ -1,5 +1,25 @@
 title: HMCL Help Document
 locale: en
 
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: document
+      read_time: false
+      author_profile: false
+      share: false
+      comments: false
+      sidebar:
+        nav: docs_en
+  - scope:
+      path: "assets/img"
+    values:
+      image: true
+  - scope:
+      path: "assets/css"
+    values:
+      css: true
+
 head_scripts:
   - /assets/js/theme.en.js
