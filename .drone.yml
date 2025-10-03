@@ -19,7 +19,7 @@ steps:
     - bundle install
     - bundle exec jekyll build --trace --verbose --destination _site --config _config.yml
     - bundle exec jekyll build --trace --verbose --destination _temp --config _config.yml,_config.en.yml
-    - cd _temp && find . -type f -name "*.en.html" -exec cp --parents {} ../_site \; && cd .. && rm -r _temp
+    - cd _temp && find . -type f -name "*.en.html" -exec cp --parents {} ../_site \; && cd .. && rm -rf _temp
     - bash scripts/copy_index_json.sh
   volumes:
   - name: dist
