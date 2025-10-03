@@ -2,6 +2,7 @@
 title: 新手导航
 note: 由 wifi-left 进行整理。
 permalink: /index.html
+breadcrumbs: false
 hits: true
 toc: true
 ---
