@@ -11,16 +11,7 @@ steps:
   environment:
     JEKYLL_ENV: production
   commands:
-    - touch Gemfile.lock
-    - chmod a+w Gemfile.lock
-    - chown -R jekyll:jekyll /drone
-    - gem sources --add https://mirrors.cloud.tencent.com/rubygems/ --remove https://rubygems.org/
-    - bundle config mirror.https://rubygems.org https://mirrors.cloud.tencent.com/rubygems
-    - bundle install
-    - bundle exec jekyll build --trace --verbose --destination _site --config _config.yml
-    - bundle exec jekyll build --trace --verbose --destination _temp --config _config.yml,_config.en.yml
-    - cd _temp && find . -type f -name "*.en.html" -exec cp --parents {} ../_site \; && cd .. && rm -rf _temp
-    - bash scripts/copy_index_json.sh
+    - bash scripts/build.sh
   volumes:
   - name: dist
     path: /drone/src/_site
