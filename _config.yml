@@ -309,8 +309,5 @@ compress_html:
   ignore:
     envs: development
 
-sass:
-  style: compressed
-
 head_scripts:
   - /assets/js/theme.js
