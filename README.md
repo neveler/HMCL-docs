@@ -1,4 +1,7 @@
 # HMCL-docs
+
+[![Build Status](https://drone.hmcl.net/api/badges/huanghongxun/HMCL-docs/status.svg)](https://drone.hmcl.net/huanghongxun/HMCL-docs)
+
 Hello Minecraft! Launcher 帮助文档仓库
 
 您可以通过对本仓库提交 Pull Request 的方式来为 HMCL 帮助文档贡献自己的力量！
