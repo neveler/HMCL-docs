@@ -15,7 +15,7 @@ toc: true
 
 以及 `Fabric API, QSL/QFAPI` 这两个随 Fabric 与 Quilt 的 API（实际是模组）可供选择。
 
-![AutoInstaller_ModLoader](/assets/img/docs/auto-installing/AutoInstaller_ModLoader.png)
+![AutoInstaller_ModLoader]({{ '/assets/img/docs/auto-installing/AutoInstaller_ModLoader.png' | relative_url }})
 
 当你使用 1.14 及以上的游戏版本时, 推荐使用 *Fabric*
 
@@ -51,7 +51,7 @@ HMCL 内置了 CurseForge 和 Modrinth 下载源的搜索和下载功能, 目前
 
 **建议点击上方的蓝色的 模组详情链接 查看模组的信息，这有可能会提示你些什么注意事项**
 
-![AddingModAutomatically](/assets/img/docs/auto-installing/AutoInstaller_ModAutoAdding.png)
+![AddingModAutomatically]({{ '/assets/img/docs/auto-installing/AutoInstaller_ModAutoAdding.png' | relative_url }})
 
 #### Fabric Mod / Quilt Mod
 
@@ -71,7 +71,7 @@ HMCL 内置了 CurseForge 和 Modrinth 下载源的搜索和下载功能, 目前
 
 #### OptiFine
 
-[详情请查阅此](/launcher/shader.html)
+[详情请查阅此]({{ '/launcher/shader.html' | relative_url }})
 
 ### 手动安装
 
@@ -83,7 +83,7 @@ HMCL 内置了 CurseForge 和 Modrinth 下载源的搜索和下载功能, 目前
 
 或者在 HMCL 的 `游戏管理页面—模组管理` 页面点击添加模组或直接将文件拖入启动器窗口。
 
-![AddingModManually](/assets/img/docs/auto-installing/AutoInstaller_ModManualAdding.png)
+![AddingModManually]({{ '/assets/img/docs/auto-installing/AutoInstaller_ModManualAdding.png' | relative_url }})
 
 ## 安装 Mod 后游戏报错/无法启动
 

@@ -7,7 +7,7 @@ hits: true
 toc: true
 ---
 
-![](/assets/img/docs/groups/crash.png)
+![]({{ '/assets/img/docs/groups/crash.png' | relative_url }})
 
 如果你遇到了游戏非正常退出问题，欢迎加入报错崩溃交流群咨询解决方案：[Minecraft 报错崩溃交流群 (666546887)](https://qm.qq.com/q/nG0Ti1kJri)
 
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
     modalContent.innerHTML = `
         <h1>⚠️加入群聊前请注意⚠️</h2>
         <ul>
-            <li>游戏非正常退出时，请点击左下角 <img src="/assets/img/docs/groups/button-1.png" style="display: inline; height: 1.5em; vertical-align: middle;" title="导出游戏崩溃日志"> 按钮（不是 <img src="/assets/img/docs/groups/button-2.png" style="display: inline; height: 1.5em; vertical-align: middle;" title="日志"> 按钮），并完整发送生成的报错压缩包</li>
+            <li>游戏非正常退出时，请点击左下角 <img src="{{ '/assets/img/docs/groups/button-1.png' | relative_url }}" style="display: inline; height: 1.5em; vertical-align: middle;" title="导出游戏崩溃日志"> 按钮（不是 <img src="{{ '/assets/img/docs/groups/button-2.png' | relative_url }}" style="display: inline; height: 1.5em; vertical-align: middle;" title="日志"> 按钮），并完整发送生成的报错压缩包</li>
             <li>遇到其他问题时，请详细说明情况并提供相关截图，以便我们提供帮助</li>
             <li>使用整合包时，请说明具体的整合包名称与版本</li>
             <li>请保持耐心，群管理和群友会协助解决问题。严禁辱骂、催促他人</li>

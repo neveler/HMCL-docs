@@ -19,7 +19,7 @@ toc: true
 
 ## 用户群
 
-![](/assets/img/docs/groups/group-3.png)
+![]({{ '/assets/img/docs/groups/group-3.png' | relative_url }})
 
 以下为闲聊群，欢迎所有用户加入（同时加入多个群聊会被踢出）：
 
@@ -31,7 +31,7 @@ toc: true
 
 ## 报错崩溃交流群
 
-如果你遇到了游戏非正常退出问题，欢迎加入报错崩溃交流群咨询解决方案：[Minecraft 报错崩溃交流群](/crash-support-group.html)
+如果你遇到了游戏非正常退出问题，欢迎加入报错崩溃交流群咨询解决方案：[Minecraft 报错崩溃交流群]({{ '/crash-support-group.html' | relative_url }})
 
 **本群仅处理游戏报错崩溃问题，无关话题请前往其他群聊讨论。**
 

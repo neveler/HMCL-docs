@@ -43,7 +43,7 @@ toc: true
         ...
 ```
 
-我们极力推荐您打开版本隔离，因为这样能避免模组之间的一部分冲突 [跳转](/launcher/global-version-isolation.html)
+我们极力推荐您打开版本隔离，因为这样能避免模组之间的一部分冲突 [跳转]({{ '/launcher/global-version-isolation.html' | relative_url }})
 
 ## 简单排查
 
@@ -66,7 +66,7 @@ toc: true
 
 *游戏崩的时候会有个窗口，里面可以导出一个压缩包，可以发给别人让别人帮你看，你千万别截图那个窗口 *磕头*
 
-![报错示例截图](/assets/img/docs/error-handbook/image.png)
+![报错示例截图]({{ '/assets/img/docs/error-handbook/image.png' | relative_url }})
 在向他人求助时，建议将 `.minecraft` 文件夹下的 `crash-reports` 文件夹和 `logs` 文件夹中的相关文件（如最新的崩溃报告和日志文件）一并打包发送。  
 这样可以让对方更全面地了解你的运行环境和报错详情，从而更高效地帮助你分析和解决问题。请注意，发送前可先检查日志内容，避免泄露个人隐私信息。
 

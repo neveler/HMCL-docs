@@ -37,7 +37,7 @@ toc: true
 
 ## 往后的使用
 在做完版本隔离的设置后，hmcl 的快速打开各个游戏文件夹的功能就会显得十分好用。
-![](/assets/img/docs/Global-version-isolation/img1.png)
+![]({{ '/assets/img/docs/Global-version-isolation/img1.png' | relative_url }})
 
 ~~善用该功能也可为你的磁盘剩下不少的空间~~，现在反思过来其实都差不多
 

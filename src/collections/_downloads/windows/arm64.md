@@ -8,9 +8,9 @@ toc: false
 
 Java 安装包已开始下载，请等待 Java 安装程序下载完成，最后启动安装程序，依照提示安装 Java。
 
-![windows-x86_64-1](/assets/img/docs/java-download-pages/windows-x86_64-1.gif)
+![windows-x86_64-1]({{ '/assets/img/docs/java-download-pages/windows-x86_64-1.gif' | relative_url }})
 
-![windows-x86_64-2](/assets/img/docs/java-download-pages/windows-x86_64-2.gif)
+![windows-x86_64-2]({{ '/assets/img/docs/java-download-pages/windows-x86_64-2.gif' | relative_url }})
 
 没有下载？[点击此处开始下载](https://alist.8mi.tech/d/mirror/ms-jdk/Auto/microsoft-jdk-21-windows-aarch64.msi)
 

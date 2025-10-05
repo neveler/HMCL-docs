@@ -167,7 +167,7 @@ OpenAL是一个跨平台的3D音频API，可以用于在多个操作系统上播
 ## 参考文章
 
 - [什么是JRE?](https://www.ibm.com/cn-zh/topics/jre "点击查看")
-- [整合包自带 Java](/modpack/modpack-in-java.md "点击查看")
+- [整合包自带 Java]({{ '/modpack/modpack-in-java.md' | relative_url }} "点击查看")
 - [如何获取Minecraft的游戏日志?](https://memoryshadow.cn/index.php/2023/06/03/how-do-i-get-minecraft-game-logs/ "点击查看")
 - [什么是JVM?](https://www.ibm.com/support/pages/ibm-i-%E4%B8%8Ajava-%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%AE%80%E4%BB%8B "点击查看")
 - [什么是GC?](https://blog.csdn.net/weixin_44908159/article/details/123626886 "点击查看")

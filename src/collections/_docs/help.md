@@ -11,7 +11,7 @@ toc: true
 
 Hello Minecraft! Launcher 的官方 QQ 群聊。
 
-[点击前往](/groups.html)
+[点击前往]({{ '/groups.html' | relative_url }})
 
 ## Discord 频道
 

@@ -5,11 +5,11 @@ categories: Java 下载
 toc: false
 ---
 
-页面已移动至 [/downloads/linux/loongarch64](/downloads/linux/loongarch64.html)
+页面已移动至 [/downloads/linux/loongarch64]({{ '/downloads/linux/loongarch64.html' | relative_url }})
 
 ---
 
-The page has moved to [/downloads/linux/loongarch64](/downloads/linux/loongarch64.html)
+The page has moved to [/downloads/linux/loongarch64]({{ '/downloads/linux/loongarch64.html' | relative_url }})
 
 <script>
     setTimeout(function() {
