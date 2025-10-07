@@ -1,4 +1,3 @@
 ---
 title: Downloads
-collection: downloads
 ---

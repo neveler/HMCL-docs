@@ -134,6 +134,10 @@ defaults:
       collection: downloads
       skip_index: true
   - scope:
+      path: "_pages/index.*"
+    values:
+      layout: index
+  - scope:
       path: assets/img
     values:
       image: true
