@@ -7,6 +7,7 @@ exclude:
   - scripts/
   - LICENSE
   - "*.md"
+locale: en
 title: HMCL Document
 head_scripts:
   - /assets/js/theme.en.js

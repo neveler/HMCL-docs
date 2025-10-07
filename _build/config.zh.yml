@@ -5,4 +5,5 @@ exclude:
   - README.md
   - LICENSE
   - "*.*.*"
+locale: zh
 build: true
