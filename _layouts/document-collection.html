@@ -1,0 +1,14 @@
+---
+layout: collection
+classes: wide
+---
+
+{%- if site.breadcrumbs -%}
+{%- unless page.breadcrumbs -%}
+<style>.breadcrumbs{display:none}</style>
+{%- endunless -%}
+{%- endif -%}
+
+{% include layout/document/before.html %}
+
+{{ content }}
