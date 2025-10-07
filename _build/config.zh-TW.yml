@@ -1,0 +1,14 @@
+cache_dir: .jekyll-cache/zh-TW
+include:
+  - _pages
+  - "*.zh-TW.md"
+exclude:
+  - assets/
+  - scripts/
+  - LICENSE
+  - "*.md"
+locale: zh-TW
+title: HMCL 文檔
+head_scripts:
+  - /assets/js/theme.zh-TW.js
+build: true

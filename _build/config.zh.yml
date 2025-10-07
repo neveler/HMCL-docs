@@ -1,0 +1,9 @@
+cache_dir: .jekyll-cache/zh
+exclude:
+  - assets/
+  - scripts/
+  - README.md
+  - LICENSE
+  - "*.*.*"
+locale: zh
+build: true

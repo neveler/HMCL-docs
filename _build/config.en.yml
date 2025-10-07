@@ -1,0 +1,14 @@
+cache_dir: .jekyll-cache/en
+include:
+  - _pages
+  - "*.en.md"
+exclude:
+  - assets/
+  - scripts/
+  - LICENSE
+  - "*.md"
+locale: en
+title: HMCL Document
+head_scripts:
+  - /assets/js/theme.en.js
+build: true
