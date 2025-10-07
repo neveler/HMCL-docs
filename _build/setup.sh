@@ -41,9 +41,9 @@ for config in ./_build/config.*.yml; do
 
     bundle exec jekyll build --trace --verbose --destination _site_temp --config "_config.yml,_build/config.$language.yml,$1"
 
-    rm -rf ./site_temp/assets
-    rm -rf ./site_temp/feed.xml
-    rm -rf ./site_temp/robots.txt
-    rm -rf ./site_temp/sitemap.xml
-    cp ./site_temp/* ./site/
+    rm -rf ./_site_temp/assets
+    rm -rf ./_site_temp/feed.xml
+    rm -rf ./_site_temp/robots.txt
+    rm -rf ./_site_temp/sitemap.xml
+    cp ./_site_temp/* ./site/
 done
