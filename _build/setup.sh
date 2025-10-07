@@ -5,6 +5,8 @@ exclude_target=("./_build" "./_data" "./_site" "./_site_temp" "./_includes" "./_
 exclude_build_file=("./_site_temp/sitemap.xml", "./_site_temp/robots.txt")
 exclude_build_folder=("./_site_temp/assets")
 
+bundle exec jekyll build --trace --verbose --destination _site --config _config.yml,"$1"
+
 for config in ./_build/config.*.yml; do
     [ -f "$config" ] || continue
 
@@ -35,7 +37,7 @@ for config in ./_build/config.*.yml; do
         done
     done
 
-    bundle exec jekyll build --trace --verbose --destination _site_temp --config "_config.yml,_build/config.$language.yml"
+    bundle exec jekyll build --trace --verbose --destination _site_temp --config "_config.yml,_build/config.$language.yml,$1"
 
     for build_src in ./_site_temp/**/*; do
         [ -f "$build_src" ] || continue
