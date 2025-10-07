@@ -17,8 +17,8 @@ for config in ./_build/config.*.yml; do
     language="${language%.yml}"
     echo "build $language version"
 
-    echo "cp -r _data_bak _data"
-    cp -r _data_bak _data
+    echo "rm -rf _data && cp -r _data_bak _data"
+    rm -rf _data && cp -r _data_bak _data
     for data in ./_data/**/*."$language".*; do
         [ -f "$data" ] || continue
         dest="${data/.$language./.}"
