@@ -111,11 +111,28 @@ defaults:
       comments: false
       sidebar:
         nav: docs
+      hits: true
+      toc: true
+      toc_sticky: true
+  - scope:
+      path: ""
+      type: "downloads"
+    values:
+      toc: false
+      classes: wide
+      skip_index: true
   - scope:
       path: _pages
     values:
       layout: document-collection
       permalink: /:basename.html
+      toc: false
+      classes: wide
+  - scope:
+      path: "_pages/downloads.*"
+    values:
+      collection: downloads
+      skip_index: true
   - scope:
       path: assets/img
     values:
@@ -316,4 +333,4 @@ compress_html:
 head_scripts:
   - /assets/js/theme.js
 
-default_language: zh
+default_locale: zh
