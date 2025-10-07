@@ -80,8 +80,6 @@ for config in build/config.*.yml; do
     echo "head_scripts:" >> build/single.yml
     echo "  - /assets/js/theme.$language.js" >> build/single.yml
 
-    cat build/single.yml
-
     jbuild_single _config.yml,build/config.$language.yml,build/single.yml,build/locales.yml,$1
 
     rm -rf build/single/assets
@@ -94,5 +92,6 @@ for config in build/config.*.yml; do
     cp -r build/data _data
 done
 
+mkdir -p _site
 rm -rf _site/*
 cp -r --parents build/mixed/* _site/
