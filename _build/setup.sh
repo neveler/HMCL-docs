@@ -7,6 +7,9 @@ exclude_build_folder=("./_site_temp/assets")
 
 bundle exec jekyll build --trace --verbose --destination _site --config _config.yml,"$1"
 
+echo "cp -r _data _data_bak"
+cp -r _data _data_bak
+
 for config in ./_build/config.*.yml; do
     [ -f "$config" ] || continue
 
@@ -50,4 +53,7 @@ for config in ./_build/config.*.yml; do
         echo "cp $build_src $build_dst"
         cp "$build_src" "$build_dst"
     done
+
+    echo "cp -r _data_bak _data"
+    cp -r _data_bak _data
 done
