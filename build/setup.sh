@@ -34,7 +34,7 @@ cp -r --parents build/single/**/*.* build/mixed/
 
 cp -r _data build/data
 
-exclude_target=("_data", "_site" "_includes" "_layouts")
+exclude_target=("_data" "_site" "_includes" "_layouts")
 
 for config in build/config.*.yml; do
     [ -f "$config" ] || continue
