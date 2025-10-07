@@ -8,14 +8,20 @@ for config in build/config.*.yml; do
     echo "- $language" > build/locales.yml
 done
 
-alias jbuild="bundle exec jekyll build --trace --verbose"
+jbuild() {
+    bundle exec jekyll build --trace --verbose "$@"
+}
 
-alias jbuild_mixed="jbuild --destination build/mixed --config"
+jbuild_mixed() {
+    jbuild --destination build/mixed --config "$@"
+}
 
 echo "=== build mixed version ==="
 jbuild_mixed _config.yml,build/locales.yml,$1
 
-alias jbuild_single="jbuild --destination build/single --config"
+jbuild_single() {
+    jbuild --destination build/single --config "$@"
+}
 
 echo "=== build default version ==="
 jbuild_single _config.yml,build/default.yml,build/locales.yml,$1
