@@ -8,6 +8,11 @@ for config in build/config.*.yml; do
     echo "  - $language" > build/locales.yml
 done
 
+cat build/locales.yml
+ls build
+
+exit 1
+
 jbuild() {
     bundle exec jekyll build --trace --verbose "$@"
 }
