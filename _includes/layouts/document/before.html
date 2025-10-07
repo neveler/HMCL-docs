@@ -1,7 +1,7 @@
 <p>
 {% for locale in site.locales %}
 {% assign language = site.data.common.layouts.document.language[locale] | default: locale %}
-{% if locale == site.locale %}
+{% if site.build and locale == site.locale %}
 <span>{{ language }}</span>
 {% else %}
 {% if locale == site.default_locale %}{% assign locale_ext = '.html' %}{% else %}{% assign locale_ext = '.' | append: locale | append: '.html' %}{% endif %}

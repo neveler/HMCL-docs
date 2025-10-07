@@ -8,3 +8,4 @@ exclude:
 title: HMCL 文檔
 head_scripts:
   - /assets/js/theme.zh-TW.js
+build: true

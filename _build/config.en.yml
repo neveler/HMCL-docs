@@ -8,3 +8,4 @@ exclude:
 title: HMCL Document
 head_scripts:
   - /assets/js/theme.en.js
+build: true
