@@ -126,8 +126,6 @@ defaults:
     values:
       layout: document-collection
       permalink: /:basename.html
-      toc: false
-      classes: wide
   - scope:
       path: "_pages/downloads.*"
     values:
