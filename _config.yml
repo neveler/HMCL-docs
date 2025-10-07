@@ -18,24 +18,24 @@ sass:
 collections:
   docs:
     output: true
-    permalink: /:path.html
+    permalink: /:path
   launcher:
     output: true
-    permalink: /:collection/:path.html
+    permalink: /:collection/:path
   changelog:
     output: true
-    permalink: /:collection/:path.html
+    permalink: /:collection/:path
   changelogs:
     output: false
   modpack:
     output: true
-    permalink: /:collection/:path.html
+    permalink: /:collection/:path
   eula:
     output: true
-    permalink: /:collection/:path.html
+    permalink: /:collection/:path
   downloads:
     output: true
-    permalink: /:collection/:path.html
+    permalink: /:collection/:path
 
 # Handling Reading
 # safe: false
@@ -89,7 +89,7 @@ baseurl: ""
 # show_dir_listing: false
 
 # Outputting
-permalink: /:categories/:title.html
+permalink: /:categories/:title
 # paginate_path: /page:num
 timezone: Asia/Shanghai
 # minimal-mistakes (with jekyll-paginate)
@@ -127,7 +127,7 @@ defaults:
       path: _pages
     values:
       layout: document-collection
-      permalink: /:basename.html
+      permalink: /:basename
   - scope:
       path: "_pages/downloads.*"
     values:
