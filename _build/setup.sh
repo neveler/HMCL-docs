@@ -2,9 +2,6 @@ shopt -s globstar
 
 exclude_target=("./_build" "./_data", "_data_bak" "./_site" "./_site_temp" "./_includes" "./_layouts")
 
-exclude_build_file=("./_site_temp/sitemap.xml", "./_site_temp/robots.txt")
-exclude_build_folder=("./_site_temp/assets")
-
 echo "cp -r _data _data_bak"
 cp -r _data _data_bak
 
@@ -44,15 +41,9 @@ for config in ./_build/config.*.yml; do
 
     bundle exec jekyll build --trace --verbose --destination _site_temp --config "_config.yml,_build/config.$language.yml,$1"
 
-    for build_src in ./_site_temp/**/*; do
-        [ -f "$build_src" ] || continue
-        [[ " ${exclude_build_file[@]} " =~ " $build_src " ]] && continue
-        for dir in "${exclude_build_folder[@]}"; do
-            [[ "$build_src" == "$dir"* ]] && continue 2
-        done
-
-        build_dst="./_site/${build_src#./_site_temp/}"
-        echo "cp $build_src $build_dst"
-        cp "$build_src" "$build_dst"
-    done
+    rm -rf ./site_temp/assets
+    rm -rf ./site_temp/feed.xml
+    rm -rf ./site_temp/robots.txt
+    rm -rf ./site_temp/sitemap.xml
+    cp ./site_temp/* ./site/
 done
