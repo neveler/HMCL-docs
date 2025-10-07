@@ -4,4 +4,13 @@ layout: single
 
 {% include layouts/document/before.html %}
 
+<div class="notice--info">
+    {%- assign byline = site.data.i18n.layouts.document.byline -%}
+    <p>{{ byline.author.before }}{{ page.author | default: byline.author.unname }}{{ byline.author.after }}{% if page.contributors %}{{ byline.contributors.before }}{{ page.contributors | join: ' ' }}{{ byline.contributors.after }}{% endif %}{{ byline.end }}</p>
+    {%- if page.note -%}
+    <hr>
+    {{ page.note | markdownify }}
+    {%- endif -%}
+</div>
+
 {{ content }}
