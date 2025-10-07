@@ -1,0 +1,14 @@
+<p>
+{% for locale in site.locales %}
+{% assign language = site.data.common.layouts.document.language[locale] | default: locale %}
+{% if locale == site.locale %}
+<span>{{ language }}</span>
+{% else %}
+{% if locale == site.default_locale %}{% assign locale_ext = '.html' %}{% else %}{% assign locale_ext = '.' | append: locale | append: '.html' %}{% endif %}
+<a href="{{ page.url | split: '.' | first | append: locale_ext | relative_url }}">{{ language }}</a>
+{% endif %}
+{% endfor %}
+{% if jekyll.environment == 'production' and page.hits %}
+<img src="https://hits.zkitefly.eu.org/?tag={{ page.url | absolute_url | url_encode }}" alt="Hits" decoding="async">
+{% endif %}
+</p>
