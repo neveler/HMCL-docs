@@ -1,6 +1,6 @@
 shopt -s globstar
 
-exclude_target=("./_build" "./_data" "./_site" "./_site_temp" "./_includes" "./_layouts")
+exclude_target=("./_build" "./_data", "_data_bak" "./_site" "./_site_temp" "./_includes" "./_layouts")
 
 exclude_build_file=("./_site_temp/sitemap.xml", "./_site_temp/robots.txt")
 exclude_build_folder=("./_site_temp/assets")
