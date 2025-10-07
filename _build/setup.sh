@@ -45,5 +45,5 @@ for config in ./_build/config.*.yml; do
     rm -rf ./_site_temp/feed.xml
     rm -rf ./_site_temp/robots.txt
     rm -rf ./_site_temp/sitemap.xml
-    cp ./_site_temp/* ./_site/
+    cp -r ./_site_temp/* ./_site/
 done
