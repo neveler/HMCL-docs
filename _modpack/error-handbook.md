@@ -1,5 +1,6 @@
 ---
 title: 模组包报错排查手册
+description: 排查和解决整合包相关问题
 date: 2025-05-24 13:39:36 +0800
 author: LIPiston
 ---
@@ -41,7 +42,7 @@ author: LIPiston
         ...
 ```
 
-我们极力推荐您打开版本隔离，因为这样能避免模组之间的一部分冲突 [跳转](/launcher/global-version-isolation.html)
+我们极力推荐您打开版本隔离，因为这样能避免模组之间的一部分冲突 [跳转]({{ '/launcher/global-version-isolation.html' | relative_url }})
 
 ## 简单排查
 

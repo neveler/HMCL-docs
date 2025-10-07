@@ -1,8 +1,9 @@
 ---
-title: Authlib-Injector 服务器设置指南
-description: 配置默认的验证服务器
+title: Authlib-Injector Server Setup Guide
+description: How to configure the launcher to display the login page upon first opening after manually archiving a modpack
 date: 2021-08-22 23:18:02 +0800
 author: huanghongxun
+note: The document is written in Simplified Chinese!
 ---
 
 ## 背景

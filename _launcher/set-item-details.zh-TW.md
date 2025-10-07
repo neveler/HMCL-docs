@@ -1,8 +1,9 @@
 ---
-title: 设置项详解
-description: HMCL 各项设置的详细说明，包括全局游戏设置、外观、下载等
+title: 設定項詳解
+description: 這篇文章針對 HMCL 的各個設定項進行了詳細的解釋
 date: 2023-6-09 10:26:00 +0800
 author: MemoryShadow
+note: 本文件以簡體中文撰冩！
 ---
 
 ## 引言

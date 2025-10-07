@@ -1,8 +1,9 @@
 ---
-title: 光影
-description: 光影的安装方法，包括 OptiFine、Oculus 和 Iris Shaders
+title: Shaders
+description: How to install shaders
 date: 2021-10-09 23:18:02 +0800
-contributors: [hejiehao]
+contributors: ['hejiehao']
+note: The document is written in Simplified Chinese!
 ---
 
 ## 安装 OptiFine

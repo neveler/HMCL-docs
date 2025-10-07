@@ -1,10 +1,13 @@
 ---
-title: 离线模式下更换皮肤
-description: 使用本地皮肤文件、LittleSkin 或 Blessing Skin 设置离线皮肤
+title: 離線模式下更換外觀
+description: 如何在離線模式下使用自訂角色外觀
 date: 2021-10-09 23:18:02 +0800
 author: qiaoshouzi
-contributors: [kitefly]
+contributors: ['kitefly']
 note: |-
+  本文件以簡體中文撰冩！
+
+  ---
   本文档仅适用于**V3.4.205及以上版本**,不支持 **V3.3.188稳定版本**, 请在 启动器设置→启动器更新 或 设置→通用→启动器更新 中选择 **测试版** 并升级到**V3.4.205及以上版本**  [HMCL下载页面](https://hmcl.huangyuhui.net/download/)
 
   ---

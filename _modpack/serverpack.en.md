@@ -1,8 +1,9 @@
 ---
-title: 服务端自动更新整合包制作教程
-description: 创建可自动更新的服务器整合包
+title: Server-Side Auto-Updating Modpack Creation Tutorial
+description: Guide on creating a server-side auto-updating modpack that forces the client to update according to the server owner's configuration
 date: 2021-08-22 23:18:02 +0800
 author: huanghongxun
+note: The document is written in Simplified Chinese!
 ---
 
 HMCL 允许服务器管理员借助服务端自动更新整合包来实现自动分发整合包更新，这将大大方便有需要频繁更新游戏客户端 Mod、配置等信息的服务器管理员。

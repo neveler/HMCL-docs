@@ -1,8 +1,9 @@
 ---
-title: 全局版本隔离
-description: 避免多个游戏版本的存档、模组和配置冲突
+title: Instance Isolation
+description: Solutions to avoid conflicts between saves and mod configurations of different game instances
 date: 2021-10-09 23:18:02 +0800
 author: LIPiston
+note: The document is written in Simplified Chinese!
 ---
 
 这是一个游戏客户端很多不方便寻找的最佳解决方案<br/>

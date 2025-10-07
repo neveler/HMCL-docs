@@ -1,8 +1,9 @@
 ---
-title: Authlib-Injector 服务器设置指南
-description: 配置默认的验证服务器
+title: Authlib-Injector 伺服器設定指南
+description: 手動打包模組包後，初次打開啟動器時直接彈出對應的帳戶登入頁
 date: 2021-08-22 23:18:02 +0800
 author: huanghongxun
+note: 本文件以簡體中文撰冩！
 ---
 
 ## 背景

@@ -1,8 +1,9 @@
 ---
-title: 自动安装与模组下载
-description: 安装 Forge、Fabric、LiteLoader、OptiFine 及模组的教程
+title: 自動安裝與模組下載
+description: 安裝 Forge、LiteLoader、Fabric 及安裝模組的教學
 date: 2021-10-09 23:18:02 +0800
 author: asdqp233
+note: 本文件以簡體中文撰冩！
 ---
 
 ## 安装 Mod 加载器

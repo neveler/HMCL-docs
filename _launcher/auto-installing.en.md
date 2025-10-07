@@ -1,8 +1,9 @@
 ---
-title: 自动安装与模组下载
-description: 安装 Forge、Fabric、LiteLoader、OptiFine 及模组的教程
+title: Automatic Installation and Mod Downloads
+description: Tutorials for installing Forge, LiteLoader, Fabric, and installing mods
 date: 2021-10-09 23:18:02 +0800
 author: asdqp233
+note: The document is written in Simplified Chinese!
 ---
 
 ## 安装 Mod 加载器
