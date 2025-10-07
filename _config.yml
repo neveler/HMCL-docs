@@ -122,6 +122,11 @@ defaults:
       classes: wide
       skip_index: true
   - scope:
+      path: ""
+      type: "changelog"
+    values:
+      layout: changelog
+  - scope:
       path: _pages
     values:
       layout: document-collection
