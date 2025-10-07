@@ -338,3 +338,7 @@ head_scripts:
   - /assets/js/theme.js
 
 default_locale: zh
+locales:
+  - zh
+  - zh-TW
+  - en
