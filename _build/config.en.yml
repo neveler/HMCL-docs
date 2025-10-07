@@ -1,7 +1,9 @@
+cache_dir: .jekyll-cache/en
 include:
   - _pages
   - "*.en.md"
 exclude:
+  - assets/
   - scripts/
   - LICENSE
   - "*.md"

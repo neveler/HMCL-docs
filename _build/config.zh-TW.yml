@@ -1,7 +1,9 @@
+cache_dir: .jekyll-cache/zh-TW
 include:
   - _pages
   - "*.zh-TW.md"
 exclude:
+  - assets/
   - scripts/
   - LICENSE
   - "*.md"
