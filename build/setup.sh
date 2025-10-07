@@ -30,7 +30,7 @@ rm -rf build/single/assets
 rm -rf build/single/feed.xml
 rm -rf build/single/robots.txt
 rm -rf build/single/sitemap.xml
-cp -r build/single/**/*.* build/mixed/
+cp -r --parents build/single/**/*.* build/mixed/
 
 cp -r _data build/data
 
@@ -86,11 +86,11 @@ for config in build/config.*.yml; do
     rm -rf build/single/feed.xml
     rm -rf build/single/robots.txt
     rm -rf build/single/sitemap.xml
-    cp -r build/single/**/*.$language.* build/mixed/
+    cp -r --parents build/single/**/*.$language.* build/mixed/
 
     rm -rf _data
     cp -r build/data _data
 done
 
 rm -rf _site/*
-cp -r build/mixed/* _site/
+cp -r --parents build/mixed/* _site/
