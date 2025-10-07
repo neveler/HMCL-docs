@@ -5,7 +5,7 @@ for config in build/config.*.yml; do
     [ -f "$config" ] || continue
     language="${config#build/config.}"
     language="${language%.yml}"
-    echo "- $language" > build/locales.yml
+    echo "  - $language" > build/locales.yml
 done
 
 jbuild() {
