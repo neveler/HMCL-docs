@@ -1,0 +1,10 @@
+include:
+  - _pages
+  - "*.en.md"
+exclude:
+  - scripts/
+  - LICENSE
+  - "*.md"
+title: HMCL Document
+head_scripts:
+  - /assets/js/theme.en.js
