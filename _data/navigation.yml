@@ -11,8 +11,6 @@ docs:
         url: /launcher.html
       - title: 整合包帮助
         url: /modpack.html
-      - title: 多人联机帮助
-        url: /multiplayer.html
   - title: 使用者帮助
     children:
       - title: 版本隔离

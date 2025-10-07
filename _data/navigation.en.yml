@@ -11,8 +11,6 @@ docs:
         url: /launcher.en.html
       - title: Modpack
         url: /modpack.en.html
-      - title: Multiplayer
-        url: /multiplayer.en.html
   - title: User Guide
     children:
       - title: Isolation

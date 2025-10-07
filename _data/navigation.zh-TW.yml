@@ -11,8 +11,6 @@ docs:
         url: /launcher.zh-TW.html
       - title: 整合包幫助
         url: /modpack.zh-TW.html
-      - title: 多人聯機幫助
-        url: /multiplayer.zh-TW.html
   - title: 使用者幫助
     children:
       - title: 版本隔離

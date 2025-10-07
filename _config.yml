@@ -33,9 +33,6 @@ collections:
   eula:
     output: true
     permalink: /:collection/:path.html
-  multiplayer:
-    output: true
-    permalink: /:collection/:path.html
   downloads:
     output: true
     permalink: /:collection/:path.html
