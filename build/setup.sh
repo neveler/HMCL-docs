@@ -51,19 +51,19 @@ for config in build/config.*.yml; do
 
     echo "cache_dir: .jekyll-cache/$language" > build/single.yml
     echo "include:" >> build/single.yml
-    echo "- _pages" >> build/single.yml
-    echo "- "*.$language.*"" >> build/single.yml
+    echo "  - _pages" >> build/single.yml
+    echo "  - \"*.$language.*\"" >> build/single.yml
     echo "exclude:" >> build/single.yml
-    echo "- assets/" >> build/single.yml
-    echo "- build/" >> build/single.yml
-    echo "- LICENSE" >> build/single.yml
-    echo "- README.md" >> build/single.yml
+    echo "  - assets/" >> build/single.yml
+    echo "  - build/" >> build/single.yml
+    echo "  - LICENSE" >> build/single.yml
+    echo "  - README.md" >> build/single.yml
 
     for target in _*; do
         [ -f "$target" ] && continue
         [[ " ${exclude_target[*]} " == *" $target "* ]] && continue
 
-        echo "- $target/" >> build/single.yml
+        echo "  - $target/" >> build/single.yml
 
         find $target -type f -name "*.*" ! -name "*.*.*" | while read -r file; do
             dir="${file%/*}"
@@ -78,7 +78,9 @@ for config in build/config.*.yml; do
 
     echo "locale: $language" >> build/single.yml
     echo "head_scripts:" >> build/single.yml
-    echo "- /assets/js/theme.$language.js" >> build/single.yml
+    echo "  - /assets/js/theme.$language.js" >> build/single.yml
+
+    cat build/single.yml
 
     jbuild_single _config.yml,build/config.$language.yml,build/single.yml,build/locales.yml,$1
 
