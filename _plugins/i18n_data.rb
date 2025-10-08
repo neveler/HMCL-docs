@@ -3,7 +3,7 @@ require "jekyll"
 module Jekyll
   class I18nData < Jekyll::Generator
     def translate(hash, locale)
-      return hash unless data.is_a?(Hash)
+      return hash unless hash.is_a?(Hash)
       hash.each do |key, value|
         if hash["#{key}#{locale}"]
           hash[key] = hash["#{key}#{locale}"]
