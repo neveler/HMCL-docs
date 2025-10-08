@@ -18,8 +18,9 @@ module Jekyll
       site_locale = site.config['locale'] || 'zh'
       default_locale = site.config['default_locale'] || 'zh'
       if site_locale != default_locale
-        site.data = translate(site.data, site.config['locale'])
+        site.data = translate(site.data, site_locale)
       end
     end
   end
 end
+
