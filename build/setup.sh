@@ -8,33 +8,26 @@ for config in build/config.*.yml; do
     echo "  - $language" >> build/locales.yml
 done
 
-jbuild() {
-    bundle exec jekyll build --trace --verbose "$@"
+jbuild_mixed() {
+    bundle exec jekyll build --trace --verbose --destination build/mixed --config _config.yml,build/locales.yml,"$@"
 }
 
-jbuild_mixed() {
-    jbuild --destination build/mixed --config "$@"
+jbuild_single() {
+    bundle exec jekyll build --trace --verbose --destination build/single --config _config.yml,build/locales.yml,"$@"
+    rm -rf build/single/assets
+    rm -rf build/single/feed.xml
+    rm -rf build/single/robots.txt
+    rm -rf build/single/sitemap.xml
+    cp -r build/single/* build/mixed/
 }
 
 echo "=== build mixed version ==="
-jbuild_mixed _config.yml,build/locales.yml,$1
-
-jbuild_single() {
-    jbuild --destination build/single --config "$@"
-}
+jbuild_mixed $1
 
 echo "=== build default version ==="
-jbuild_single _config.yml,build/default.yml,build/locales.yml,$1
+jbuild_single build/default.yml,$1
 
-rm -rf build/single/assets
-rm -rf build/single/feed.xml
-rm -rf build/single/robots.txt
-rm -rf build/single/sitemap.xml
-cp -r build/single/* build/mixed/
-
-cp -r _data build/data
-
-exclude_target=("_data" "_site" "_includes" "_layouts")
+exclude_target=("_data" "_site" "_includes" "_layouts" "_plugins")
 
 for config in build/config.*.yml; do
     [ -f "$config" ] || continue
@@ -43,12 +36,6 @@ for config in build/config.*.yml; do
     language="${language%.yml}"
 
     echo "=== build $language version ==="
-    for data in _data/**/*.$language.*; do
-        [ -f "$data" ] || continue
-        dest="${data/.$language./.}"
-        mv "$data" "$dest"
-    done
-
     echo "cache_dir: .jekyll-cache/$language" > build/single.yml
     echo "include:" >> build/single.yml
     echo "  - _pages" >> build/single.yml
@@ -80,16 +67,7 @@ for config in build/config.*.yml; do
     echo "head_scripts:" >> build/single.yml
     echo "  - /assets/js/theme.$language.js" >> build/single.yml
 
-    jbuild_single _config.yml,build/config.$language.yml,build/single.yml,build/locales.yml,$1
-
-    rm -rf build/single/assets
-    rm -rf build/single/feed.xml
-    rm -rf build/single/robots.txt
-    rm -rf build/single/sitemap.xml
-    cp -r build/single/* build/mixed/
-
-    rm -rf _data
-    cp -r build/data _data
+    jbuild_single build/config.$language.yml,build/single.yml,$1
 done
 
 mkdir -p _site
