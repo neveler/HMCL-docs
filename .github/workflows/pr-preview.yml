@@ -15,7 +15,7 @@ env:
   JEKYLL_CONFIG_URL: https://${{ github.repository_owner }}.github.io
   JEKYLL_CONFIG_BASEURL: /${{ github.event.repository.name }}/PR${{ github.event.pull_request.number }}
 jobs:
-  pr-preview:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout PR
@@ -36,24 +36,71 @@ jobs:
           echo "source: ${{ github.workspace }}" >> _action.yml
           echo "destination: /home/runner/site" >> _action.yml
           bundle exec jekyll build --config _config.yml,_action.yml
-      - name: Download gh-pages
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          name: site
+          path: /home/runner/site
+  merge:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone gh-pages
         run: git clone --branch gh-pages --depth 1 https://github.com/${{ github.repository }} /home/runner/gh-pages
         continue-on-error: true
-      - name: Merge gh-pages
+      - name: Prepare gh-pages
         run: |
           mkdir -p /home/runner/gh-pages
           rm -rf /home/runner/gh-pages/.git
           rm -rf /home/runner/gh-pages/PR${{ github.event.pull_request.number }}
-          mv /home/runner/site /home/runner/gh-pages/PR${{ github.event.pull_request.number }}
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Upload artifact
+      - name: Download site
+        uses: actions/download-artifact@v5
+        with:
+          name: site
+          path: /home/runner/
+      - name: Merge gh-pages
+        run: |
+          mkdir -p /home/runner/gh-pages/PR${{ github.event.pull_request.number }}
+          tar -xf /home/runner/artifact.tar -C /home/runner/gh-pages/PR${{ github.event.pull_request.number }}
+      - name: Upload gh-pages
         uses: actions/upload-pages-artifact@v3
         with:
+          name: github-pages
           path: /home/runner/gh-pages
+  upload:
+    needs: merge
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download gh-pages
+        uses: actions/download-artifact@v5
+        with:
+          name: github-pages
+          path: /home/runner/
+      - name: Extract gh-pages
+        run: |
+          mkdir -p /home/runner/gh-pages
+          tar -xf /home/runner/artifact.tar -C /home/runner/gh-pages
+      - name: Upload gh-pages
+        run: |
+          cd /home/runner/gh-pages
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git init && git add .
+          git commit -m "Deploy [skip ci]" || echo "No changes to commit"
+          git checkout -b gh-pages
+          git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git push origin gh-pages -f
+  deploy:
+    needs: merge
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages
       - name: Comment Preview URL
         uses: actions/github-script@v8
         with:
@@ -65,13 +112,3 @@ jobs:
               issue_number: context.issue.number,
               body: "PR Preview URL: ${{ env.JEKYLL_CONFIG_URL }}${{ env.JEKYLL_CONFIG_BASEURL }}"
             })
-      - name: Upload archive
-        run: |
-          cd /home/runner/gh-pages
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git init && git add .
-          git commit -m "Deploy [skip ci]" || echo "No changes to commit"
-          git checkout -b gh-pages
-          git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-          git push origin gh-pages -f
