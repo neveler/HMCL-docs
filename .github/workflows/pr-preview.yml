@@ -12,8 +12,8 @@ concurrency:
   cancel-in-progress: false
 env:
   JEKYLL_ENV: production
-  JEKYLL_CONFIG_URL: https://hmcl-dev.github.io
-  JEKYLL_CONFIG_BASEURL: /HMCL-docs/PR${{ github.event.pull_request.number }}
+  JEKYLL_CONFIG_URL: https://${{ github.repository_owner }}.github.io
+  JEKYLL_CONFIG_BASEURL: /${{ github.event.repository.name }}/PR${{ github.event.pull_request.number }}
 jobs:
   pr-preview:
     runs-on: ubuntu-latest
