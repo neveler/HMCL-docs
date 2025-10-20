@@ -1,0 +1,74 @@
+name: PR Preview
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+permissions:
+  pages: write
+  contents: write
+  id-token: write
+  pull-requests: write
+env:
+  JEKYLL_ENV: production
+  JEKYLL_CONFIG_URL: https://hmcl-dev.github.io
+  JEKYLL_CONFIG_BASEURL: /HMCL-docs/PR${{ github.event.pull_request.number }}
+jobs:
+  pr-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          fetch-depth: 1
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.4"
+          bundler-cache: true
+      - name: Jekyll Build
+        run: |
+          echo "url: ${{ env.JEKYLL_CONFIG_URL }}" > _action.yml
+          echo "baseurl: ${{ env.JEKYLL_CONFIG_BASEURL }}" >> _action.yml
+          echo "source: ${{ github.workspace }}" >> _action.yml
+          echo "destination: /home/runner/site" >> _action.yml
+          bundle exec jekyll build --config _config.yml,_action.yml
+      - name: Download gh-pages
+        run: git clone --branch gh-pages --depth 1 https://github.com/${{ github.repository }} /home/runner/gh-pages
+        continue-on-error: true
+      - name: Merge gh-pages
+        run: |
+          mkdir -p /home/runner/gh-pages
+          rm -rf /home/runner/gh-pages/.git
+          rm -rf /home/runner/gh-pages/PR${{ github.event.pull_request.number }}
+          mv /home/runner/site /home/runner/gh-pages/PR${{ github.event.pull_request.number }}
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: /home/runner/gh-pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Comment Preview URL
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: "PR Preview URL: ${{ env.JEKYLL_CONFIG_URL }}${{ env.JEKYLL_CONFIG_BASEURL }}"
+            })
+      - name: Upload archive
+        run: |
+          cd /home/runner/gh-pages
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git init && git add .
+          git commit -m "Deploy [skip ci]" || echo "No changes to commit"
+          git checkout -b gh-pages
+          git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git push origin gh-pages -f
