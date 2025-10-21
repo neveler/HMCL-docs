@@ -8,29 +8,30 @@ concurrency:
   group: pr-preview
   cancel-in-progress: false
 env:
-  GITHUB_PR_NUMBER: ${{ github.event.issue.number || github.event.pull_request.number }}
+  GITHUB_PR_NUMBER: ${{ github.event_name == 'issue_comment' && github.event.issue.number || github.event.pull_request.number }}
+  GITHUB_PAGE_ORIGIN: https://${{ github.repository_owner }}.github.io
+  GITHUB_PAGE_PATHNAME: /${{ github.event.repository.name }}
   JEKYLL_ENV: production
-  JEKYLL_CONFIG_URL: https://${{ github.repository_owner }}.github.io
-  JEKYLL_CONFIG_BASEURL: /${{ github.event.repository.name }}/PR${{ github.event.issue.number || github.event.pull_request.number }}
 jobs:
-  remove-preview:
-    if: ${{ (github.event_name == 'pull_request_target' && (github.event.action == 'closed' || (github.event.action == 'labeled' && github.event.label.name == 'remove-preview'))) || (github.event_name == 'issue_comment' && github.event.issue.pull_request && (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'MEMBER') && github.event.comment.body == '/remove-preview') }}
+  remove:
+    if: ${{ (github.event_name == 'pull_request_target' && (github.event.action == 'closed' || (github.event.action == 'labeled' && github.event.label.name == 'preview/remove'))) || (github.event_name == 'issue_comment' && github.event.issue.pull_request && (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'MEMBER') && github.event.comment.body == '/preview remove') }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
     steps:
-      - name: Update gh-pages
+      - name: Update Pages
         run: |
           git clone --branch gh-pages --depth 1 https://github.com/${{ github.repository }}.git /home/runner/gh-pages || true
+          mkdir -p /home/runner/gh-pages
           rm -rf /home/runner/gh-pages/.git
           rm -rf /home/runner/gh-pages/PR${{ env.GITHUB_PR_NUMBER }}
           cd /home/runner/gh-pages
           git init
           git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b gh-pages
-          echo "[$(date)]Remove Preview PR${{ env.GITHUB_PR_NUMBER }}" > README.md
+          echo "[$(date)] Remove Preview PR${{ env.GITHUB_PR_NUMBER }}" > README.md
           git add .
           git commit -m "[skip ci] update gh-pages" || echo "No changes to commit"
           git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
@@ -45,7 +46,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              name: "remove-preview"
+              name: "preview/remove"
             })
       - name: Comment Message (issue_comment)
         if: ${{ github.event_name == 'issue_comment' }}
@@ -57,7 +58,7 @@ jobs:
               repo: context.repo.repo,
               comment_id: context.payload.comment.id,
               issue_number: context.issue.number,
-              body: "Remove Preview URL: ${{ env.JEKYLL_CONFIG_URL }}${{ env.JEKYLL_CONFIG_BASEURL }}"
+              body: "Remove Preview URL: ${{ env.GITHUB_PAGE_ORIGIN }}${{ env.GITHUB_PAGE_PATHNAME }}/PR${{ env.GITHUB_PR_NUMBER }}"
             })
       - name: Comment Message (pull_request_target)
         if: ${{ github.event_name == 'pull_request_target' }}
@@ -68,14 +69,14 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: "Remove Preview URL: ${{ env.JEKYLL_CONFIG_URL }}${{ env.JEKYLL_CONFIG_BASEURL }}"
+              body: "Remove Preview URL: ${{ env.GITHUB_PAGE_ORIGIN }}${{ env.GITHUB_PAGE_PATHNAME }}/PR${{ env.GITHUB_PR_NUMBER }}"
             })
   build:
-    if: ${{ (github.event_name == 'pull_request_target' && github.event.action == 'labeled' && github.event.label.name == 'preview') || (github.event_name == 'issue_comment' && github.event.issue.pull_request && (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'MEMBER') && github.event.comment.body == '/preview') }}
+    if: ${{ (github.event_name == 'pull_request_target' && github.event.action == 'labeled' && github.event.label.name == 'preview/create') || (github.event_name == 'issue_comment' && github.event.issue.pull_request && (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'MEMBER') && github.event.comment.body == '/preview create') }}
     runs-on: ubuntu-latest
     steps:
-      - name: Fetch PR Info (issue_comment)
-        id: fetch-pr-info
+      - name: Get PR (issue_comment)
+        id: get-pr
         if: ${{ github.event_name == 'issue_comment' }}
         uses: actions/github-script@v8
         with:
@@ -91,8 +92,8 @@ jobs:
         if: ${{ github.event_name == 'issue_comment' }}
         uses: actions/checkout@v5
         with:
-          ref: ${{ steps.fetch-pr-info.outputs.sha }}
-          repository: ${{ steps.fetch-pr-info.outputs.repository }}
+          ref: ${{ steps.get-pr.outputs.sha }}
+          repository: ${{ steps.get-pr.outputs.repository }}
           fetch-depth: 1
       - name: Checkout PR (pull_request_target)
         if: ${{ github.event_name == 'pull_request_target' }}
@@ -108,8 +109,8 @@ jobs:
           bundler-cache: true
       - name: Jekyll Build
         run: |
-          echo "url: ${{ env.JEKYLL_CONFIG_URL }}" > _action.yml
-          echo "baseurl: ${{ env.JEKYLL_CONFIG_BASEURL }}" >> _action.yml
+          echo "url: ${{ env.GITHUB_PAGE_ORIGIN }}" > _action.yml
+          echo "baseurl: ${{ env.GITHUB_PAGE_PATHNAME }}/PR${{ env.GITHUB_PR_NUMBER }}" >> _action.yml
           echo "source: ${{ github.workspace }}" >> _action.yml
           echo "destination: /home/runner/site" >> _action.yml
           bundle exec jekyll build --config _config.yml,_action.yml
@@ -122,15 +123,13 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Clone gh-pages
-        run: git clone --branch gh-pages --depth 1 https://github.com/${{ github.repository }} /home/runner/gh-pages
-        continue-on-error: true
-      - name: Prepare gh-pages
+      - name: Prepare Pages
         run: |
+          git clone --branch gh-pages --depth 1 https://github.com/${{ github.repository }} /home/runner/gh-pages || true
           mkdir -p /home/runner/gh-pages
           rm -rf /home/runner/gh-pages/.git
           rm -rf /home/runner/gh-pages/PR${{ env.GITHUB_PR_NUMBER }}
-      - name: Download site
+      - name: Download Site
         uses: actions/download-artifact@v5
         with:
           name: site
@@ -163,7 +162,7 @@ jobs:
           cd /home/runner/gh-pages
           git init
           git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b gh-pages
           echo "[$(date)] Preview PR${{ env.GITHUB_PR_NUMBER }}" > README.md
           git add .
@@ -177,6 +176,9 @@ jobs:
       pages: write
       id-token: write
       pull-requests: write
+    environment:
+      name: github-pages
+      url: ${{ env.GITHUB_PAGE_ORIGIN }}${{ env.GITHUB_PAGE_PATHNAME }}/PR${{ env.GITHUB_PR_NUMBER }}
     steps:
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -195,7 +197,7 @@ jobs:
               repo: context.repo.repo,
               comment_id: context.payload.comment.id,
               issue_number: context.issue.number,
-              body: "PR Preview URL: ${{ env.JEKYLL_CONFIG_URL }}${{ env.JEKYLL_CONFIG_BASEURL }}"
+              body: "PR Preview URL: ${{ env.GITHUB_PAGE_ORIGIN }}${{ env.GITHUB_PAGE_PATHNAME }}/PR${{ env.GITHUB_PR_NUMBER }}"
             })
       - name: Comment Message (pull_request_target)
         if: ${{ github.event_name == 'pull_request_target' }}
@@ -206,7 +208,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: "PR Preview URL: ${{ env.JEKYLL_CONFIG_URL }}${{ env.JEKYLL_CONFIG_BASEURL }}"
+              body: "PR Preview URL: ${{ env.GITHUB_PAGE_ORIGIN }}${{ env.GITHUB_PAGE_PATHNAME }}/PR${{ env.GITHUB_PR_NUMBER }}"
             })
       - name: Remove Label (pull_request_target)
         if: ${{ github.event_name == 'pull_request_target' }}
@@ -218,5 +220,5 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              name: "preview"
+              name: "preview/create"
             })
