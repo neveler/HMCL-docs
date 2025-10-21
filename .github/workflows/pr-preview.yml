@@ -8,9 +8,10 @@ concurrency:
   group: pr-preview
   cancel-in-progress: false
 env:
+  GITHUB_PR_NUMBER: ${{ github.event.issue.number || github.event.pull_request.number }}
   JEKYLL_ENV: production
   JEKYLL_CONFIG_URL: https://${{ github.repository_owner }}.github.io
-  JEKYLL_CONFIG_BASEURL: /${{ github.event.repository.name }}/PR${{ github.event.issue.number }}
+  JEKYLL_CONFIG_BASEURL: /${{ github.event.repository.name }}/PR${{ github.event.issue.number || github.event.pull_request.number }}
 jobs:
   remove-preview:
     if: ${{ (github.event_name == 'pull_request_target' && (github.event.action == 'closed' || (github.event.action == 'labeled' && github.event.label.name == 'remove-preview'))) || (github.event_name == 'issue_comment' && github.event.issue.pull_request && (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'MEMBER') && github.event.comment.body == '/remove-preview') }}
@@ -23,13 +24,13 @@ jobs:
         run: |
           git clone --branch gh-pages --depth 1 https://github.com/${{ github.repository }}.git /home/runner/gh-pages || true
           rm -rf /home/runner/gh-pages/.git
-          rm -rf /home/runner/gh-pages/PR${{ github.event.issue.number }}
+          rm -rf /home/runner/gh-pages/PR${{ env.GITHUB_PR_NUMBER }}
           cd /home/runner/gh-pages
           git init
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b gh-pages
-          echo "[$(date)]Remove Preview PR${{ github.event.issue.number }}" > README.md
+          echo "[$(date)]Remove Preview PR${{ env.GITHUB_PR_NUMBER }}" > README.md
           git add .
           git commit -m "[skip ci] update gh-pages" || echo "No changes to commit"
           git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
@@ -128,7 +129,7 @@ jobs:
         run: |
           mkdir -p /home/runner/gh-pages
           rm -rf /home/runner/gh-pages/.git
-          rm -rf /home/runner/gh-pages/PR${{ github.event.issue.number }}
+          rm -rf /home/runner/gh-pages/PR${{ env.GITHUB_PR_NUMBER }}
       - name: Download site
         uses: actions/download-artifact@v5
         with:
@@ -136,8 +137,8 @@ jobs:
           path: /home/runner/
       - name: Merge gh-pages
         run: |
-          mkdir -p /home/runner/gh-pages/PR${{ github.event.issue.number }}
-          tar -xf /home/runner/artifact.tar -C /home/runner/gh-pages/PR${{ github.event.issue.number }}
+          mkdir -p /home/runner/gh-pages/PR${{ env.GITHUB_PR_NUMBER }}
+          tar -xf /home/runner/artifact.tar -C /home/runner/gh-pages/PR${{ env.GITHUB_PR_NUMBER }}
       - name: Upload Pages
         uses: actions/upload-pages-artifact@v3
         with:
@@ -164,7 +165,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b gh-pages
-          echo "[$(date)] Preview PR${{ github.event.issue.number }}" > README.md
+          echo "[$(date)] Preview PR${{ env.GITHUB_PR_NUMBER }}" > README.md
           git add .
           git commit -m "[skip ci] update gh-pages" || echo "No changes to commit"
           git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
