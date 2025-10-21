@@ -1,5 +1,7 @@
 name: PR Preview
 on:
+  issue_comment:
+    types: [created]
   pull_request_target:
     types: [labeled, closed]
 concurrency:
@@ -8,39 +10,35 @@ concurrency:
 env:
   JEKYLL_ENV: production
   JEKYLL_CONFIG_URL: https://${{ github.repository_owner }}.github.io
-  JEKYLL_CONFIG_BASEURL: /${{ github.event.repository.name }}/PR${{ github.event.pull_request.number }}
+  JEKYLL_CONFIG_BASEURL: /${{ github.event.repository.name }}/PR${{ github.event.issue.number }}
 jobs:
   remove-preview:
-    if: ${{ github.event.action == 'closed' || (github.event.action == 'labeled' && github.event.label.name == 'remove-preview') }}
+    if: ${{ (github.event_name == 'pull_request_target' && (github.event.action == 'closed' || (github.event.action == 'labeled' && github.event.label.name == 'remove-preview'))) || (github.event_name == 'issue_comment' && github.event.issue.pull_request && (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'MEMBER') && github.event.comment.body == '/remove-preview') }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
     steps:
-      - name: Download gh-pages
-        run: git clone --branch gh-pages --depth 1 https://github.com/${{ github.repository }} /home/runner/gh-pages
-        continue-on-error: true
-      - name: Remove Preview
+      - name: Update gh-pages
         run: |
-          mkdir -p /home/runner/gh-pages
+          git clone --branch gh-pages --depth 1 https://github.com/${{ github.repository }}.git /home/runner/gh-pages || true
           rm -rf /home/runner/gh-pages/.git
-          rm -rf /home/runner/gh-pages/PR${{ github.event.pull_request.number }}
-      - name: Upload gh-pages
-        run: |
+          rm -rf /home/runner/gh-pages/PR${{ github.event.issue.number }}
           cd /home/runner/gh-pages
-          echo "Remove Preview PR${{ github.event.pull_request.number }}" > README.md
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git init && git add .
-          git commit -m "Deploy [skip ci]" || echo "No changes to commit"
+          git init
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b gh-pages
+          echo "[$(date)]Remove Preview PR${{ github.event.issue.number }}" > README.md
+          git add .
+          git commit -m "[skip ci] update gh-pages" || echo "No changes to commit"
           git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
           git push origin gh-pages -f
-      - name: Remove Label
+      - name: Remove Label (pull_request_target)
+        if: ${{ github.event_name == 'pull_request_target' }}
         uses: actions/github-script@v8
         continue-on-error: true
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             github.rest.issues.removeLabel({
               owner: context.repo.owner,
@@ -48,10 +46,22 @@ jobs:
               issue_number: context.issue.number,
               name: "remove-preview"
             })
-      - name: Comment Message
+      - name: Comment Message (issue_comment)
+        if: ${{ github.event_name == 'issue_comment' }}
         uses: actions/github-script@v8
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: context.payload.comment.id,
+              issue_number: context.issue.number,
+              body: "Remove Preview URL: ${{ env.JEKYLL_CONFIG_URL }}${{ env.JEKYLL_CONFIG_BASEURL }}"
+            })
+      - name: Comment Message (pull_request_target)
+        if: ${{ github.event_name == 'pull_request_target' }}
+        uses: actions/github-script@v8
+        with:
           script: |
             github.rest.issues.createComment({
               owner: context.repo.owner,
@@ -60,13 +70,34 @@ jobs:
               body: "Remove Preview URL: ${{ env.JEKYLL_CONFIG_URL }}${{ env.JEKYLL_CONFIG_BASEURL }}"
             })
   build:
-    if: ${{ github.event.action == 'labeled' && github.event.label.name == 'preview' }}
+    if: ${{ (github.event_name == 'pull_request_target' && github.event.action == 'labeled' && github.event.label.name == 'preview') || (github.event_name == 'issue_comment' && github.event.issue.pull_request && (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'MEMBER') && github.event.comment.body == '/preview') }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout PR
+      - name: Fetch PR Info (issue_comment)
+        id: fetch-pr-info
+        if: ${{ github.event_name == 'issue_comment' }}
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const { data } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+            core.setOutput('sha', data.head.sha);
+            core.setOutput('repository', data.head.repo.full_name);
+      - name: Checkout PR (issue_comment)
+        if: ${{ github.event_name == 'issue_comment' }}
         uses: actions/checkout@v5
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
+          ref: ${{ steps.fetch-pr-info.outputs.sha }}
+          repository: ${{ steps.fetch-pr-info.outputs.repository }}
+          fetch-depth: 1
+      - name: Checkout PR (pull_request_target)
+        if: ${{ github.event_name == 'pull_request_target' }}
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           fetch-depth: 1
       - name: Setup Ruby
@@ -97,7 +128,7 @@ jobs:
         run: |
           mkdir -p /home/runner/gh-pages
           rm -rf /home/runner/gh-pages/.git
-          rm -rf /home/runner/gh-pages/PR${{ github.event.pull_request.number }}
+          rm -rf /home/runner/gh-pages/PR${{ github.event.issue.number }}
       - name: Download site
         uses: actions/download-artifact@v5
         with:
@@ -105,8 +136,8 @@ jobs:
           path: /home/runner/
       - name: Merge gh-pages
         run: |
-          mkdir -p /home/runner/gh-pages/PR${{ github.event.pull_request.number }}
-          tar -xf /home/runner/artifact.tar -C /home/runner/gh-pages/PR${{ github.event.pull_request.number }}
+          mkdir -p /home/runner/gh-pages/PR${{ github.event.issue.number }}
+          tar -xf /home/runner/artifact.tar -C /home/runner/gh-pages/PR${{ github.event.issue.number }}
       - name: Upload Pages
         uses: actions/upload-pages-artifact@v3
         with:
@@ -123,19 +154,19 @@ jobs:
         with:
           name: github-pages
           path: /home/runner/
-      - name: Extract gh-pages
+      - name: Update gh-pages
         run: |
           mkdir -p /home/runner/gh-pages
           tar -xf /home/runner/artifact.tar -C /home/runner/gh-pages
-      - name: Upload gh-pages
-        run: |
+          rm -rf /home/runner/gh-pages/.git
           cd /home/runner/gh-pages
-          echo "Preview PR${{ github.event.pull_request.number }}" > README.md
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git init && git add .
-          git commit -m "Deploy [skip ci]" || echo "No changes to commit"
+          git init
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b gh-pages
+          echo "[$(date)] Preview PR${{ github.event.issue.number }}" > README.md
+          git add .
+          git commit -m "[skip ci] update gh-pages" || echo "No changes to commit"
           git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
           git push origin gh-pages -f
   deploy:
@@ -153,10 +184,22 @@ jobs:
         uses: actions/deploy-pages@v4
         with:
           artifact_name: github-pages
-      - name: Comment Message
+      - name: Comment Message (issue_comment)
+        if: ${{ github.event_name == 'issue_comment' }}
         uses: actions/github-script@v8
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: context.payload.comment.id,
+              issue_number: context.issue.number,
+              body: "PR Preview URL: ${{ env.JEKYLL_CONFIG_URL }}${{ env.JEKYLL_CONFIG_BASEURL }}"
+            })
+      - name: Comment Message (pull_request_target)
+        if: ${{ github.event_name == 'pull_request_target' }}
+        uses: actions/github-script@v8
+        with:
           script: |
             github.rest.issues.createComment({
               owner: context.repo.owner,
@@ -164,10 +207,11 @@ jobs:
               issue_number: context.issue.number,
               body: "PR Preview URL: ${{ env.JEKYLL_CONFIG_URL }}${{ env.JEKYLL_CONFIG_BASEURL }}"
             })
-      - name: Remove Label
+      - name: Remove Label (pull_request_target)
+        if: ${{ github.event_name == 'pull_request_target' }}
         uses: actions/github-script@v8
+        continue-on-error: true
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             github.rest.issues.removeLabel({
               owner: context.repo.owner,
