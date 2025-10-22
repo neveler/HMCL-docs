@@ -17,37 +17,28 @@ jobs:
     if: ${{ (github.event_name == 'pull_request_target' && (github.event.action == 'closed' || (github.event.action == 'labeled' && github.event.label.name == 'preview/remove'))) || (github.event_name == 'issue_comment' && github.event.issue.pull_request && (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'MEMBER') && github.event.comment.body == '/preview remove') }}
     runs-on: ubuntu-latest
     permissions:
+      actions: write
       contents: write
       pull-requests: write
     steps:
-      - name: Update Pages
+      - name: Restore Pages
+        id: restore-pages
+        uses: actions/cache/restore@v4
+        with:
+          key: pages-${{ github.run_id }}
+          path: /home/runner/gh-pages
+          restore-keys: pages-
+      - name: Prepare Pages
         run: |
-          git clone --branch gh-pages --depth 1 https://github.com/${{ github.repository }}.git /home/runner/gh-pages || true
           mkdir -p /home/runner/gh-pages
           rm -rf /home/runner/gh-pages/.git
           rm -rf /home/runner/gh-pages/PR${{ env.GITHUB_PR_NUMBER }}
-          cd /home/runner/gh-pages
-          git init
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -b gh-pages
-          echo "[$(date)] Remove Preview PR${{ env.GITHUB_PR_NUMBER }}" > README.md
-          git add .
-          git commit -m "[skip ci] update gh-pages" || echo "No changes to commit"
-          git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-          git push origin gh-pages -f
-      - name: Remove Label (pull_request_target)
-        if: ${{ github.event_name == 'pull_request_target' }}
-        uses: actions/github-script@v8
-        continue-on-error: true
+          echo "[$(date)] Remove Preview PR${{ env.GITHUB_PR_NUMBER }}" > /home/runner/gh-pages/index.html
+      - name: Save Pages
+        uses: actions/cache/save@v4
         with:
-          script: |
-            github.rest.issues.removeLabel({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              name: "preview/remove"
-            })
+          key: pages-${{ github.run_id }}
+          path: /home/runner/gh-pages
       - name: Comment Message (issue_comment)
         if: ${{ github.event_name == 'issue_comment' }}
         uses: actions/github-script@v8
@@ -71,36 +62,80 @@ jobs:
               issue_number: context.issue.number,
               body: "Remove Preview URL: ${{ env.GITHUB_PAGE_ORIGIN }}${{ env.GITHUB_PAGE_PATHNAME }}/PR${{ env.GITHUB_PR_NUMBER }}"
             })
-  build:
-    if: ${{ (github.event_name == 'pull_request_target' && github.event.action == 'labeled' && github.event.label.name == 'preview/create') || (github.event_name == 'issue_comment' && github.event.issue.pull_request && (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'MEMBER') && github.event.comment.body == '/preview create') }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get PR (issue_comment)
-        id: get-pr
-        if: ${{ github.event_name == 'issue_comment' }}
+      - name: Remove History Cache
+        if: ${{ steps.restore-pages.outputs.cache-matched-key }}
         uses: actions/github-script@v8
         with:
           script: |
-            const { data } = await github.rest.pulls.get({
+            github.rest.actions.deleteActionsCacheByKey({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              pull_number: context.issue.number
-            });
-            core.setOutput('sha', data.head.sha);
-            core.setOutput('repository', data.head.repo.full_name);
-      - name: Checkout PR (issue_comment)
-        if: ${{ github.event_name == 'issue_comment' }}
-        uses: actions/checkout@v5
-        with:
-          ref: ${{ steps.get-pr.outputs.sha }}
-          repository: ${{ steps.get-pr.outputs.repository }}
-          fetch-depth: 1
-      - name: Checkout PR (pull_request_target)
+              key: "${{ steps.restore-pages.outputs.cache-matched-key }}"
+            })
+      - name: Remove Label (pull_request_target)
         if: ${{ github.event_name == 'pull_request_target' }}
+        uses: actions/github-script@v8
+        continue-on-error: true
+        with:
+          script: |
+            github.rest.issues.removeLabel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              name: "preview/remove"
+            })
+  prepare:
+    if: ${{ (github.event_name == 'pull_request_target' && github.event.action == 'labeled' && github.event.label.name == 'preview/create') || (github.event_name == 'issue_comment' && github.event.issue.pull_request && (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'MEMBER') && github.event.comment.body == '/preview create') }}
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+    outputs:
+      sha: ${{ steps.create-check.outputs.sha }}
+      repository: ${{ steps.create-check.outputs.repository }}
+      check-id: ${{ steps.create-check.outputs.check-id }}
+    steps:
+      - name: Create Check
+        id: create-check
+        uses: actions/github-script@v8
+        with:
+          script: |
+            let pr = context.payload.pull_request;
+            if (!pr) {
+              const result = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.issue.number
+              });
+              pr = result.data;
+            }
+            console.log(pr);
+            core.setOutput('sha', pr.head.sha);
+            core.setOutput('repository', pr.head.repo.full_name);
+            const { data: check } = await github.rest.checks.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: "Create preview",
+              head_sha: pr.head.sha,
+              status: "in_progress",
+              started_at: new Date().toISOString(),
+              details_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${{ github.run_id }}`,
+              output: {
+                title: "Create preview by command",
+                summary: "Preview is being created..."
+              }
+            });
+            core.setOutput('check-id', check.id);
+  build:
+    needs: prepare
+    runs-on: ubuntu-latest
+    outputs:
+      artifact-id: ${{ steps.upload-site.outputs.artifact-id }}
+    steps:
+      - name: Checkout PR
         uses: actions/checkout@v5
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ needs.prepare.outputs.sha }}
+          repository: ${{ needs.prepare.outputs.repository }}
           fetch-depth: 1
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -114,72 +149,48 @@ jobs:
           echo "source: ${{ github.workspace }}" >> _action.yml
           echo "destination: /home/runner/site" >> _action.yml
           bundle exec jekyll build --config _config.yml,_action.yml
-      - name: Upload site
-        uses: actions/upload-pages-artifact@v3
+      - name: Upload Site
+        id: upload-site
+        uses: actions/upload-artifact@v4
         with:
           name: site
           path: /home/runner/site
   merge:
     needs: build
     runs-on: ubuntu-latest
-    steps:
-      - name: Prepare Pages
-        run: |
-          git clone --branch gh-pages --depth 1 https://github.com/${{ github.repository }} /home/runner/gh-pages || true
-          mkdir -p /home/runner/gh-pages
-          rm -rf /home/runner/gh-pages/.git
-          rm -rf /home/runner/gh-pages/PR${{ env.GITHUB_PR_NUMBER }}
-      - name: Download Site
-        uses: actions/download-artifact@v5
-        with:
-          name: site
-          path: /home/runner/
-      - name: Merge gh-pages
-        run: |
-          mkdir -p /home/runner/gh-pages/PR${{ env.GITHUB_PR_NUMBER }}
-          tar -xf /home/runner/artifact.tar -C /home/runner/gh-pages/PR${{ env.GITHUB_PR_NUMBER }}
-      - name: Upload Pages
-        uses: actions/upload-pages-artifact@v3
-        with:
-          name: github-pages
-          path: /home/runner/gh-pages
-  upload:
-    needs: merge
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Download gh-pages
-        uses: actions/download-artifact@v5
-        with:
-          name: github-pages
-          path: /home/runner/
-      - name: Update gh-pages
-        run: |
-          mkdir -p /home/runner/gh-pages
-          tar -xf /home/runner/artifact.tar -C /home/runner/gh-pages
-          rm -rf /home/runner/gh-pages/.git
-          cd /home/runner/gh-pages
-          git init
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -b gh-pages
-          echo "[$(date)] Preview PR${{ env.GITHUB_PR_NUMBER }}" > README.md
-          git add .
-          git commit -m "[skip ci] update gh-pages" || echo "No changes to commit"
-          git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-          git push origin gh-pages -f
-  deploy:
-    needs: merge
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-      pull-requests: write
     environment:
       name: github-pages
       url: ${{ env.GITHUB_PAGE_ORIGIN }}${{ env.GITHUB_PAGE_PATHNAME }}/PR${{ env.GITHUB_PR_NUMBER }}
+    permissions:
+      actions: write
+      pages: write
+      id-token: write
+      contents: write
+      pull-requests: write
     steps:
+      - name: Restore Pages
+        id: restore-pages
+        uses: actions/cache/restore@v4
+        with:
+          key: pages-${{ github.run_id }}
+          path: /home/runner/gh-pages
+          restore-keys: pages-
+      - name: Prepare Pages
+        run: |
+          mkdir -p /home/runner/gh-pages
+          rm -rf /home/runner/gh-pages/.git
+          rm -rf /home/runner/gh-pages/PR${{ env.GITHUB_PR_NUMBER }}
+          echo "[$(date)] Preview PR${{ env.GITHUB_PR_NUMBER }}" > /home/runner/gh-pages/index.html
+      - name: Merge Site
+        uses: actions/download-artifact@v5
+        with:
+          name: site
+          path: /home/runner/gh-pages/PR${{ env.GITHUB_PR_NUMBER }}
+      - name: Upload Pages
+        uses: actions/upload-pages-artifact@v4
+        with:
+          name: github-pages
+          path: /home/runner/gh-pages
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Deploy Pages
@@ -189,7 +200,9 @@ jobs:
           artifact_name: github-pages
       - name: Comment Message (issue_comment)
         if: ${{ github.event_name == 'issue_comment' }}
+        id: comment-message
         uses: actions/github-script@v8
+        continue-on-error: true
         with:
           script: |
             github.rest.issues.updateComment({
@@ -199,8 +212,8 @@ jobs:
               issue_number: context.issue.number,
               body: "PR Preview URL: ${{ env.GITHUB_PAGE_ORIGIN }}${{ env.GITHUB_PAGE_PATHNAME }}/PR${{ env.GITHUB_PR_NUMBER }}"
             })
-      - name: Comment Message (pull_request_target)
-        if: ${{ github.event_name == 'pull_request_target' }}
+      - name: Comment Message
+        if: ${{ github.event_name == 'pull_request_target' || steps.comment-message.outcome == 'failure' }}
         uses: actions/github-script@v8
         with:
           script: |
@@ -209,6 +222,31 @@ jobs:
               repo: context.repo.repo,
               issue_number: context.issue.number,
               body: "PR Preview URL: ${{ env.GITHUB_PAGE_ORIGIN }}${{ env.GITHUB_PAGE_PATHNAME }}/PR${{ env.GITHUB_PR_NUMBER }}"
+            })
+      - name: Save Pages
+        uses: actions/cache/save@v4
+        with:
+          key: pages-${{ github.run_id }}
+          path: /home/runner/gh-pages
+      - name: Remove History Cache
+        if: ${{ steps.restore-pages.outputs.cache-matched-key }}
+        uses: actions/github-script@v8
+        with:
+          script: |
+            github.rest.actions.deleteActionsCacheByKey({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              key: "${{ steps.restore-pages.outputs.cache-matched-key }}"
+            })
+      - name: Remove Temp Artifact
+        if: ${{ needs.build.outputs.artifact-id }}
+        uses: actions/github-script@v8
+        with:
+          script: |
+            github.rest.actions.deleteArtifact({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              artifact_id: "${{ needs.build.outputs.artifact-id }}"
             })
       - name: Remove Label (pull_request_target)
         if: ${{ github.event_name == 'pull_request_target' }}
@@ -219,6 +257,31 @@ jobs:
             github.rest.issues.removeLabel({
               owner: context.repo.owner,
               repo: context.repo.repo,
+
               issue_number: context.issue.number,
               name: "preview/create"
             })
+  finally:
+    if: ${{ needs.prepare.result == 'success' }}
+    needs: [prepare, merge]
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+    steps:
+      - name: Check Over
+        uses: actions/github-script@v8
+        with:
+          script: |
+            github.rest.checks.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              check_run_id: ${{ needs.prepare.outputs.check-id }},
+              status: "completed",
+              conclusion: "${{ needs.merge.result == 'success' && 'success' || 'failure' }}",
+              completed_at: new Date().toISOString(),
+              details_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${{ github.run_id }}`,
+              output: {
+                title: "Create preview by command",
+                summary: "The preview has been generated and deployed successfully."
+              }
+            });
