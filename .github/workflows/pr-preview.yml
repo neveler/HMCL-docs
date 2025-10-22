@@ -166,7 +166,6 @@ jobs:
       pages: write
       id-token: write
       contents: write
-      pull-requests: write
     steps:
       - name: Restore Pages
         id: restore-pages
@@ -229,6 +228,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       checks: write
+      pull-requests: write
     steps:
       - name: Remove Comment (issue_comment)
         if: ${{ github.event_name == 'issue_comment' }}
@@ -255,6 +255,8 @@ jobs:
               name: "preview/create"
             })
       - name: Check Over
+        env:
+          PREVIEW_URL: ${{ env.GITHUB_PAGE_ORIGIN }}${{ env.GITHUB_PAGE_PATHNAME }}/PR${{ env.GITHUB_PR_NUMBER }}
         uses: actions/github-script@v8
         with:
           script: |
@@ -265,9 +267,9 @@ jobs:
               status: "completed",
               conclusion: "${{ needs.merge.result == 'success' && 'success' || 'failure' }}",
               completed_at: new Date().toISOString(),
-              details_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${{ github.run_id }}`,
+              details_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/runs/${{ github.run_id }}`,
               output: {
-                title: "Create preview by command",
-                summary: "The preview has been generated and deployed successfully."
+                title: "Create preview ${{ needs.merge.result == 'success' && 'success' || 'failure' }}",
+                summary: `${{ needs.merge.result == 'success' && 'Preview URL: ${process.env.PREVIEW_URL}' || '' }}`
               }
             });
