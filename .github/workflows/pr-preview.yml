@@ -198,31 +198,6 @@ jobs:
         uses: actions/deploy-pages@v4
         with:
           artifact_name: github-pages
-      - name: Comment Message (issue_comment)
-        if: ${{ github.event_name == 'issue_comment' }}
-        id: comment-message
-        uses: actions/github-script@v8
-        continue-on-error: true
-        with:
-          script: |
-            github.rest.issues.updateComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              comment_id: context.payload.comment.id,
-              issue_number: context.issue.number,
-              body: "PR Preview URL: ${{ env.GITHUB_PAGE_ORIGIN }}${{ env.GITHUB_PAGE_PATHNAME }}/PR${{ env.GITHUB_PR_NUMBER }}"
-            })
-      - name: Comment Message
-        if: ${{ github.event_name == 'pull_request_target' || steps.comment-message.outcome == 'failure' }}
-        uses: actions/github-script@v8
-        with:
-          script: |
-            github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: "PR Preview URL: ${{ env.GITHUB_PAGE_ORIGIN }}${{ env.GITHUB_PAGE_PATHNAME }}/PR${{ env.GITHUB_PR_NUMBER }}"
-            })
       - name: Save Pages
         uses: actions/cache/save@v4
         with:
@@ -248,6 +223,25 @@ jobs:
               repo: context.repo.repo,
               artifact_id: "${{ needs.build.outputs.artifact-id }}"
             })
+  finally:
+    if: ${{ always() && needs.prepare.result == 'success' }}
+    needs: [prepare, merge]
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+    steps:
+      - name: Remove Comment (issue_comment)
+        if: ${{ github.event_name == 'issue_comment' }}
+        id: comment-message
+        uses: actions/github-script@v8
+        continue-on-error: true
+        with:
+          script: |
+            github.rest.issues.deleteComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: context.payload.comment.id,
+            })
       - name: Remove Label (pull_request_target)
         if: ${{ github.event_name == 'pull_request_target' }}
         uses: actions/github-script@v8
@@ -257,17 +251,9 @@ jobs:
             github.rest.issues.removeLabel({
               owner: context.repo.owner,
               repo: context.repo.repo,
-
               issue_number: context.issue.number,
               name: "preview/create"
             })
-  finally:
-    if: ${{ always() && needs.prepare.result == 'success' }}
-    needs: [prepare, merge]
-    runs-on: ubuntu-latest
-    permissions:
-      checks: write
-    steps:
       - name: Check Over
         uses: actions/github-script@v8
         with:
