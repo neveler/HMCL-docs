@@ -262,7 +262,7 @@ jobs:
               name: "preview/create"
             })
   finally:
-    if: ${{ needs.prepare.result == 'success' }}
+    if: ${{ always() && needs.prepare.result == 'success' }}
     needs: [prepare, merge]
     runs-on: ubuntu-latest
     permissions:
