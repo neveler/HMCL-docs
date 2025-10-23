@@ -9,8 +9,6 @@ concurrency:
   cancel-in-progress: false
 env:
   GITHUB_PR_NUMBER: ${{ github.event_name == 'issue_comment' && github.event.issue.number || github.event.pull_request.number }}
-  GITHUB_PAGE_ORIGIN: https://${{ github.repository_owner }}.github.io
-  GITHUB_PAGE_PATHNAME: /${{ github.event.repository.name }}
   JEKYLL_ENV: production
 jobs:
   preview-remove:
@@ -121,6 +119,8 @@ jobs:
       checks: write
     outputs:
       sha: ${{ steps.init.outputs.sha }}
+      domain: ${{ steps.init.outputs.domain }}
+      pathname: ${{ steps.init.outputs.pathname }}
       repository: ${{ steps.init.outputs.repository }}
       check-id: ${{ steps.init.outputs.check-id }}
     steps:
@@ -130,6 +130,9 @@ jobs:
         with:
           script: |
             const { owner, repo } = context.repo;
+            const pages = (await octokit.rest.repos.getPages({ owner, repo })).data;
+            core.setOutput('domain', pages.cname || `${owner.toLowerCase()}.github.io`);
+            core.setOutput('pathname', pages.cname == null ? `/${repo}` : '');
             const pr = context.payload.pull_request || (await github.rest.pulls.get({
               owner, repo,
               pull_number: context.issue.number
@@ -168,8 +171,8 @@ jobs:
           bundler-cache: true
       - name: Jekyll Build
         run: |
-          echo "url: ${{ env.GITHUB_PAGE_ORIGIN }}" > _action.yml
-          echo "baseurl: ${{ env.GITHUB_PAGE_PATHNAME }}/PR${{ env.GITHUB_PR_NUMBER }}" >> _action.yml
+          echo "url: https://${{ needs.preview-create-init.outputs.domain }}" > _action.yml
+          echo "baseurl: ${{ needs.preview-create-init.outputs.pathname }}/PR${{ env.GITHUB_PR_NUMBER }}" >> _action.yml
           echo "source: ${{ github.workspace }}" >> _action.yml
           echo "destination: /home/runner/site" >> _action.yml
           bundle exec jekyll build --config _config.yml,_action.yml
@@ -180,11 +183,11 @@ jobs:
           name: site
           path: /home/runner/site
   preview-create-deploy:
-    needs: preview-create-build
+    needs: [preview-create-init, preview-create-build]
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ env.GITHUB_PAGE_ORIGIN }}${{ env.GITHUB_PAGE_PATHNAME }}/PR${{ env.GITHUB_PR_NUMBER }}
+      url: https://${{ needs.preview-create-init.outputs.domain }}${{ needs.preview-create-init.outputs.pathname }}/PR${{ env.GITHUB_PR_NUMBER }}
     permissions:
       actions: write
       pages: write
@@ -257,7 +260,7 @@ jobs:
         id: comment-message
         name: Comment Message (issue_comment)
         env:
-          PREVIEW_URL: ${{ env.GITHUB_PAGE_ORIGIN }}${{ env.GITHUB_PAGE_PATHNAME }}/PR${{ env.GITHUB_PR_NUMBER }}
+          PREVIEW_URL: https://${{ needs.preview-create-init.outputs.domain }}${{ needs.preview-create-init.outputs.pathname }}/PR${{ env.GITHUB_PR_NUMBER }}
         continue-on-error: true
         uses: actions/github-script@v8
         with:
@@ -272,7 +275,7 @@ jobs:
       - if: ${{ steps.comment-message.outcome == 'failure' }}
         name: Comment Message
         env:
-          PREVIEW_URL: ${{ env.GITHUB_PAGE_ORIGIN }}${{ env.GITHUB_PAGE_PATHNAME }}/PR${{ env.GITHUB_PR_NUMBER }}
+          PREVIEW_URL: https://${{ needs.preview-create-init.outputs.domain }}${{ needs.preview-create-init.outputs.pathname }}/PR${{ env.GITHUB_PR_NUMBER }}
         uses: actions/github-script@v8
         with:
           script: |
@@ -296,7 +299,7 @@ jobs:
             });
       - name: Check Over
         env:
-          PREVIEW_URL: ${{ env.GITHUB_PAGE_ORIGIN }}${{ env.GITHUB_PAGE_PATHNAME }}/PR${{ env.GITHUB_PR_NUMBER }}
+          PREVIEW_URL: https://${{ needs.preview-create-init.outputs.domain }}${{ needs.preview-create-init.outputs.pathname }}/PR${{ env.GITHUB_PR_NUMBER }}
         uses: actions/github-script@v8
         with:
           script: |
