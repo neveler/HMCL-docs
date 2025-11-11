@@ -1,6 +1,6 @@
 ---
-title: 为 HMCL 帮助文档出一份力
-excerpt: 欢迎参与 HMCL 文档建设！你可以在 HMCL-docs 仓库提交 Pull Request 或 Issue 改进文档，也可通过 Discord 或 HMCL 用户群提供反馈
+title: 文档贡献指南
+excerpt: 本文介绍了参与文档贡献的流程
 date: 2021-10-09 23:18:02 +0800
 author: huanghongxun
 ---
