@@ -1,6 +1,6 @@
 ---
 title: 加入 HMCL 报错崩溃交流群
-excerpt: HMCL 报错崩溃交流群仅处理游戏报错与崩溃问题
+excerpt: 本文介绍了加入 HMCL 报错崩溃交流群的注意事项。
 date: 2024-03-05 17:00:00 +0800
 author: zkitefly
 ---

@@ -1,6 +1,6 @@
 ---
 title: 加入 HMCL 用户群
-excerpt: 本文汇总了 HMCL 相关的 QQ 交流群，旨在方便用户进行交流讨论或反馈问题
+excerpt: 本文汇总了 HMCL 相关的 QQ 交流群，旨在方便用户进行交流讨论或反馈问题。
 date: 2024-03-05 17:00:00 +0800
 author: Glavo
 contributors:

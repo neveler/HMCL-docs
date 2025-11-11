@@ -1,6 +1,6 @@
 ---
 title: 文档贡献指南
-excerpt: 本文介绍了参与文档贡献的流程
+excerpt: 本文介绍了参与文档贡献的流程。
 date: 2021-10-09 23:18:02 +0800
 author: huanghongxun
 ---
