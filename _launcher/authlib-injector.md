@@ -1,5 +1,6 @@
 ---
-title: Authlib-Injector 服务器设置指南
+title: 添加默认 authlib-injector 验证服务器
+excerpt: 本文介绍了如何设置默认的验证服务器。
 date: 2021-08-22 23:18:02 +0800
 author: huanghongxun
 ---

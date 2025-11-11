@@ -21,9 +21,9 @@ docs:
       - title: 设置离线皮肤
         url: /launcher/offline-skin.html
         description: 本文将告诉你如何设置一个属于自己的离线皮肤。
-      - title: HMCL 的自动安装使用教程
+      - title: 自动安装
         url: /launcher/auto-installing.html
-        description: 本文将告诉你如何用 HMCL 安装 Forge、Fabric、Fabric API、LiteLoader、Optifine 以及 模组 等。
+        description: 本文介绍了使用 HMCL 安装 Forge、Fabric、Fabric API、LiteLoader、Optifine 等模组加载器及相应模组的方法。
       - title: 安装光影
         url: /launcher/shader.html
         description: 本文将告诉你如何安装光影。
@@ -41,13 +41,13 @@ docs:
       - title: 添加默认 authlib-injector 验证服务器
         url: /launcher/authlib-injector.html
         description: 本文将告诉你如何设置默认的验证服务器。
-  - title: 其他
+  - title: 其它
     children:
+      - title: 官方网站
+        url: https://hmcl.huangyuhui.net
+      - title: 仓库地址
+        url: https://github.com/HMCL-dev/HMCL
+      - title: 文档仓库地址
+        url: https://github.com/HMCL-dev/HMCL-docs
       - title: 文档贡献指南
         url: /contribution.html
-      - title: HMCL GitHub 地址
-        url: https://github.com/HMCL-dev/HMCL
-      - title: HMCL 帮助文档 GitHub 地址
-        url: https://github.com/HMCL-dev/HMCL-docs
-      - title: HMCL 官网
-        url: https://hmcl.huangyuhui.net

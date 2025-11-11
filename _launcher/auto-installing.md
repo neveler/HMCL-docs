@@ -1,5 +1,6 @@
 ---
-title: 自动安装与模组下载简介
+title: 自动安装
+excerpt: 本文介绍了使用 HMCL 安装 Forge、Fabric、Fabric API、LiteLoader、Optifine 等模组加载器及相应模组的方法。
 date: 2021-10-09 23:18:02 +0800
 author: asdqp233
 ---
