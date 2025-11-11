@@ -8,11 +8,11 @@ docs:
       - title: 常见问题
         url: /faq.html
       - title: 启动器使用相关
-        url: /launcher/
+        url: /collections/launcher.html
       - title: 整合包帮助
-        url: /modpack/
+        url: /collections/modpack.html
       - title: 多人联机帮助
-        url: /multiplayer/
+        url: /collections/multiplayer.html
   - title: 使用者帮助
     children:
       - title: 版本隔离
