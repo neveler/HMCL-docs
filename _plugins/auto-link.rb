@@ -10,7 +10,11 @@ Jekyll::Hooks.register [:pages, :documents], :post_convert do |doc|
   process_uri = lambda do |path|
     uri = Addressable::URI.parse(path)
     if uri&.path
-      uri.path = Liquid::Template.parse("{% link #{uri.path[1..]} %}").render!(liquid_context)
+      if uri.path.start_with?("/assets/")
+        uri.path = Liquid::Template.parse("{{ '#{uri.path}' | relative_url }}").render!(liquid_context)
+      else
+        uri.path = Liquid::Template.parse("{% link #{uri.path[1..]} %}").render!(liquid_context)
+      end
     end
     uri.to_s
   end

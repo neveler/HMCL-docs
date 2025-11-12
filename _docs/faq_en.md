@@ -90,7 +90,7 @@ Common solutions are mentioned at the end of HMCL's "Automatic Installation and 
 
 Or check the modpack error troubleshooting manual: [Jump](/_modpack/error-handbook.md)
 
-If you can't solve the error, try [seeking help](/_docs/help.md)
+If you can't solve the error, try [seeking help](/_docs/help_en.md)
 
 ### How to Choose the Java Version for the Game
 
