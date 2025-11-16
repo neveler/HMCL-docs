@@ -113,11 +113,18 @@ defaults:
       hits: true
       toc: true
       toc_sticky: true
+      locale: zh
   - scope:
       path: ""
       type: downloads
     values:
       toc: false
+  - scope:
+      path: "**/*.en.*"
+    values:
+      locale: en
+      sidebar:
+        nav: docs_en
 
 # liquid:
 #   error_mode: warn
