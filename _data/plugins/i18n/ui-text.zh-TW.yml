@@ -1,0 +1,22 @@
+locale_warning:
+  before: 本文使用
+  after: 撰冩。
+
+locale:
+  en: 英語
+  zh: 簡體中文
+  zh-TW: 繁體中文
+
+byline:
+  author:
+    before: "本文由 "
+    after: " 創建"
+    default: 未署名用戶
+  contributors:
+    before: "，並由 "
+    after: " 編輯"
+  end: 。
+
+i18n:
+  before: "本文額外提供 "
+  after: " 版本。"

@@ -1,13 +1,28 @@
 ---
 layout: single
 ---
+{%- assign locale = page.locale | default: layout.locale | default: site.locale %}
 
-{% if jekyll.environment == 'production' and page.hits %}
+{%- if jekyll.environment == "production" and page.hits -%}
 <img src="https://hits.zkitefly.eu.org/?tag={{ page.url | absolute_url | url_encode }}" alt="Hits" decoding="async">
-{% endif %}
+{%- endif %}
+
+{%- assign plugin_i18n_key = "ui-text" | append: locale %}
+{%- assign plugin_i18n_locale = site.data.plugins.i18n[plugin_i18n_key].locale %}{% if plugin_i18n_locale %}{% assign plugin_i18n_locale_locale = locale %}{% else %}{% assign plugin_i18n_locale = site.data.plugins.i18n.ui-text.locale %}{% assign plugin_i18n_locale_locale = site.locale %}{% endif -%}
+{%- if page.origin.locale and page.locale and page.origin.locale != page.locale -%}
+{%- assign plugin_i18n_locale_warning = site.data.plugins.i18n[plugin_i18n_key].locale_warning %}{% if plugin_i18n_locale_warning %}{% assign plugin_i18n_locale_warning_locale = locale %}{% else %}{% assign plugin_i18n_locale_warning = site.data.plugins.i18n.ui-text.locale_warning %}{% assign plugin_i18n_locale_warning_locale = site.locale %}{% endif -%}
+<div class="notice--warning" lang="{{ plugin_i18n_locale_warning_locale }}">{{ plugin_i18n_locale_warning.before }}<span lang="{{ plugin_i18n_locale_locale }}">{{ plugin_i18n_locale[page.origin.locale] }}</span>{{ plugin_i18n_locale_warning.after }}</div>
+{%- endif %}
 
 <div class="notice--info">
-  <p>本文由 {{ page.author | default: '未署名用户' }} 创建{% if page.contributors %}，并由 {{ page.contributors | join: ' ' }} 编辑{% endif %}。</p>
+  {% assign plugin_i18n_byline = site.data.plugins.i18n[plugin_i18n_key].byline %}{% if plugin_i18n_byline %}{% assign plugin_i18n_byline_locale = locale %}{% else %}{% assign plugin_i18n_byline = site.data.plugins.i18n.ui-text.byline %}{% assign plugin_i18n_byline_locale = site.locale %}{% endif -%}
+  <span lang="{{ plugin_i18n_byline_locale }}">{{ plugin_i18n_byline.author.before }}{{ page.author | default: plugin_i18n_byline.author.default }}{{ plugin_i18n_byline.author.after }}{% if page.contributors %}{{ plugin_i18n_byline.contributors.before }}{{ page.contributors | join: ' ' }}{{ plugin_i18n_byline.contributors.after }}{% endif %}{{ plugin_i18n_byline.end }}</span>
+  {% assign plugin_i18n_size = page.translations | size -%}
+  {% if plugin_i18n_size > 1 -%}
+  {%- assign plugin_i18n_i18n = site.data.plugins.i18n[plugin_i18n_key].i18n %}{% if plugin_i18n_i18n %}{% assign plugin_i18n_i18n_locale = locale %}{% else %}{% assign plugin_i18n_i18n = site.data.plugins.i18n.ui-text.i18n %}{% assign plugin_i18n_i18n_locale = site.locale %}{% endif -%}
+  {%- capture plugin_i18n_i18n_links %}{% for item in page.translations %}{% assign item_locale = item[0] %}{% assign item_url = item[1].url %}{% unless item_locale == page.locale %}<a href="{{ item_url | relative_url }}" lang="{{ plugin_i18n_locale_locale }}">{{ plugin_i18n_locale[item_locale] }} {% assign plugin_i18n_item_key = "ui-text" | append: item_locale %}{% assign plugin_i18n_locale_item_locale = site.data.plugins.i18n[plugin_i18n_item_key].locale %}{% if plugin_i18n_locale_item_locale %}{% assign plugin_i18n_locale_item_locale_locale = item_locale %}{% else %}{% assign plugin_i18n_locale_item_locale = site.data.plugins.i18n.ui-text.locale %}{% assign plugin_i18n_locale_item_locale_locale = site.locale %}{% endif %}<small lang="{{ plugin_i18n_locale_item_locale_locale }}">{{ plugin_i18n_locale_item_locale[item_locale] }}</small></a> {% endunless %}{% endfor %}{%- endcapture -%}
+  <span lang="{{ plugin_i18n_i18n_locale }}">{{ plugin_i18n_i18n.before }}{{ plugin_i18n_i18n_links | strip }}{{ plugin_i18n_i18n.after }}</span>
+  {%- endif %}
 </div>
 
 {{ content }}

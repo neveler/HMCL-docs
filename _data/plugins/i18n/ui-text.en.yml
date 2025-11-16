@@ -1,0 +1,22 @@
+locale_warning:
+  before: "This article was written in "
+  after: .
+
+locale:
+  en: English
+  zh: Simplified Chinese
+  zh-TW: Traditional Chinese
+
+byline:
+  author:
+    before: "This article was created by "
+    after: ""
+    default: unattributed user
+  contributors:
+    before: " and edited by "
+    after: ""
+  end: .
+
+i18n:
+  before: "This article is also available in "
+  after: .
