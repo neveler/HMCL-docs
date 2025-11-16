@@ -1,0 +1,29 @@
+locale_warning:
+  before: 當前內容使用
+  after: 撰冩。
+
+locale:
+  en: 英語
+  zh: 簡體中文
+  zh-TW: 繁體中文
+
+byline:
+  author:
+    before: "當前內容由 "
+    after: " 創建"
+    default: 未署名用戶
+  contributors:
+    before: "，並由 "
+    after: " 編輯"
+  end: 。
+
+i18n:
+  before: "當前內容額外提供 "
+  after: " 版本。"
+
+preview:
+  before: 當前站點爲預覽構建而非官方文檔
+  after: 。
+  feedback:
+    before: "，您可前往 "
+    after: " 反饋"
