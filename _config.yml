@@ -113,6 +113,7 @@ defaults:
       hits: true
       toc: true
       toc_sticky: true
+      i18n: true
   - scope:
       path: ""
       type: downloads
@@ -128,6 +129,18 @@ defaults:
       type: changelogs
     values:
       channel: stable
+  - scope:
+      path: assets
+    values:
+      i18n: false
+  - scope:
+      path: 404.md
+    values:
+      i18n: false
+  - scope:
+      path: robots.txt
+    values:
+      i18n: false
 
 # liquid:
 #   error_mode: warn
@@ -151,7 +164,8 @@ defaults:
 theme: minimal-mistakes-jekyll
 
 # Site Settings
-locale: zh
+locale: zh-Hans
+locales: [zh-Hans, zh-Hant, en]
 # rtl:
 title: HMCL 文档
 # title_separator: -
