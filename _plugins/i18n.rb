@@ -1,7 +1,34 @@
 module JekyllFeed
   class Generator < Jekyll::Generator
     def feed_source_path
-      @feed_source_path ||= File.expand_path "_layouts/plugins/feed.xml", @site.config["source"]
+      @feed_source_path ||= File.expand_path "_layouts/feed.xml", @site.config["source"]
+    end
+  end
+end
+
+module Jekyll
+
+  class JekyllSitemap < Jekyll::Generator
+    def source_path(file = "sitemap.xml")
+      File.expand_path "_layouts/#{file}", @site.config["source"]
+    end
+
+    def sitemap
+      site_map = PageWithoutAFile.new(@site, __dir__, "", "sitemap.xml")
+      site_map.content = File.read(source_path).gsub(MINIFY_REGEX, "")
+      site_map.data["layout"] = nil
+      site_map.data["static_files"] = static_files.map(&:to_liquid)
+      site_map.data["xsl"] = file_exists?("sitemap.xsl")
+      site_map.data["i18n"] = false
+      site_map
+    end
+
+    def robots
+      robots = PageWithoutAFile.new(@site, __dir__, "", "robots.txt")
+      robots.content = File.read(source_path("robots.txt"))
+      robots.data["layout"] = nil
+      robots.data["i18n"] = false
+      robots
     end
   end
 end
@@ -16,7 +43,7 @@ module I18nFilter
 
     site = @context.registers[:site]
     default_locale = site.config["locale"].is_a?(String) ? site.config["locale"] : "en"
-    return { "locale" => default_locale, "data" => hash[key] }
+    { "locale" => default_locale, "data" => hash[key] }
   end
 end
 
@@ -38,16 +65,20 @@ Jekyll::Hooks.register [:site], :pre_render do |site|
 
   (site.pages + site.documents).each do |doc|
     next unless doc.is_a?(Jekyll::Page) or doc.is_a?(Jekyll::Document)
-    basename = File.basename(doc.path)
-    doc_locale = basename[/\.([^.]+)\.[^.]*$/, 1]
     next unless doc.data["i18n"] == true
+    path_parts = doc.path.split("/")
+    next if path_parts.empty?
+    basename = path_parts[-1]
+    basename_parts = basename.split(".")
+    next unless basename_parts.length == 2 || basename_parts.length > 2 && locales.include?(basename_parts[-2])
+    doc_locale = basename_parts.length > 2 ? basename_parts[-2] : default_locale
 
-    if doc_locale && locales.include?(doc_locale)
-      default_doc_path = doc.path.sub(/\.#{Regexp.escape(doc_locale)}(?=\.\w+$)/, "")
+    if doc_locale == default_locale
+      doc.data["fallbacks"] = Hash.new
     else
-      doc_locale = default_locale
-      default_doc_path = doc.path
+      path_parts[-1] = "#{basename_parts[0..-3].join(".")}.#{basename_parts[-1]}"
     end
+    default_doc_path = path_parts.join('/')
     docs_map[default_doc_path] ||= {}
     docs_map[default_doc_path][doc_locale] = doc
   end
@@ -85,6 +116,7 @@ Jekyll::Hooks.register [:site], :pre_render do |site|
           collection.docs << new_doc
         end
 
+        default_doc.data["fallbacks"][locale] = new_doc
         new_doc.content = fallback_doc.content
         fallback_doc.data.each { |k, v| new_doc.data[k] = v }
         new_doc.data["permalink"] = "/#{locale}#{fallback_doc.url}"

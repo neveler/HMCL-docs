@@ -4,8 +4,8 @@ locale_warning:
 
 locale:
   en: English
-  zh: Simplified Chinese
-  zh-TW: Traditional Chinese
+  zh-Hans: Simplified Chinese
+  zh-Hant: Traditional Chinese
 
 byline:
   author:

@@ -4,8 +4,8 @@ locale_warning:
 
 locale:
   en: 英語
-  zh: 簡體中文
-  zh-TW: 繁體中文
+  zh-Hans: 簡體中文
+  zh-Hant: 繁體中文
 
 byline:
   author:
