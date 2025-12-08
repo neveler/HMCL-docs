@@ -15,5 +15,9 @@ Hello Minecraft! Launcher 的官方 QQ 群聊。
 Hello Minecraft! Launcher 的官方 Discord 频道。
 
 [点击前往](https://discord.gg/jVvC7HfM6U)
-
+<!-- test 1111111111111111 -->
+<!-- test 1111111111111111 -->
+<!-- test 1111111111111111 -->
+<!-- test 1111111111111111 -->
+<!-- test 1111111111111111 -->
 <!-- test review -->
