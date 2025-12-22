@@ -1,0 +1,21 @@
+---
+layout: default
+---
+
+{% if page.title %}
+<header>
+  <h1><a class="text-body text-decoration-none" href="{{ page.url | absolute_url }}">{{ page.title | markdownify | remove: "<p>" | remove: "</p>" }}</a></h1>
+</header>
+{% endif %}
+
+<div class="d-flex gap-2">
+  <section class="flex-fill">{{ content }}</section>
+  {% if page.toc %}
+  <div>
+    <div class="card sticky-top" style="min-width: 240px; max-height: calc(100vh - 96px); top: 48px;">
+      <div class="card-header"><i class="bi bi-list-ul"></i> {{ page.toc_label | default: site.data.ui-text[site.locale].toc_label | default: "On this page" }}</div>
+      <nav id="toc" class="p-2 overflow-auto">{% include toc.html class="nav nav-pills flex-column" submenu_class="nav nav-pills flex-column ms-3 py-2" anchor_class="nav-link px-2 py-1" sanitize=true html=content h_min=1 h_max=6 skip_no_ids=true %}</nav>
+    </div>
+  </div>
+  {% endif %}
+</div>
