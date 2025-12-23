@@ -164,19 +164,31 @@ layout: compress
 
 <body class="d-flex flex-column min-vh-100">
   {% capture logo_path %}{{ site.logo }}{% endcapture %}
-  <header class="mb-4 border-bottom">
+  <header class="mb-4 border-bottom sticky-top z-3 bg-body">
     <nav class="navbar navbar-expand-sm">
       <div class="container-fluid">
-        <a class="navbar-brand d-flex align-items-center gap-2" href="{{ '/' | relative_url }}">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="{{ '/' | relative_url }}" style="min-height: 64px;">
           {% unless logo_path == empty %}
           <img width="32" height="32" src="{{ logo_path | relative_url }}"
             alt="{{ site.masthead_title | default: site.title }}">
           {% endunless %}
           <strong>{{ site.masthead_title | default: site.title | escape_once | strip }}</strong>
         </a>
-        <button class="btn btn-sm d-sm-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbar">
-          <i class="bi bi-three-dots"></i>
-        </button>
+        <div>
+          {% if page.sidebar and page.sidebar.nav %}
+          <button class="btn btn-outline-secondary d-xl-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar">
+            <i class="bi bi-list text-body"></i>
+          </button>
+          {% endif %}
+          {% if page.toc %}
+          <button class="btn btn-outline-secondary d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#toc">
+            <i class="bi bi-list-ul text-body"></i>
+          </button>
+          {% endif %}
+          <button class="btn btn-outline-secondary d-sm-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbar">
+            <i class="bi bi-three-dots text-body"></i>
+          </button>
+        </div>
         <div class="collapse navbar-collapse" id="navbar">
           <ul class="navbar-nav ms-auto">
             {%- for link in site.data.navigation.main -%}
@@ -195,10 +207,7 @@ layout: compress
   <main class="flex-fill">
     <div class="container-fluid d-flex gap-3 align-items-start">
       {% if page.sidebar and page.sidebar.nav %}
-      <button class="btn btn-primary fixed-bottom p-0 m-3 d-block d-xl-none" style="width: 32px; height: 32px; right: auto;" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar">
-        <i class="bi bi-list fs-5"></i>
-      </button>
-      <aside class="ms-3 ms-xl-0 card offcanvas-xl offcanvas-start flex-shrink-0 sticky-xl-top overflow-auto" data-bs-scroll="true" data-bs-backdrop="false" id="sidebar" style="width: 240px; max-height: calc(100vh - 96px); top: 48px;">
+      <aside class="z-2 ms-3 ms-xl-0 card offcanvas-xl offcanvas-start flex-shrink-0 sticky-xl-top overflow-auto" data-bs-backdrop="false" data-bs-scroll="true" id="sidebar" style="width: 240px; max-height: calc(100vh - 128px); top: 80px;">
       {% for navname in page.sidebar.nav %}
         {% assign navigation = site.data.navigation[navname] %}
         {% for nav in navigation %}
