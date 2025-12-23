@@ -8,19 +8,17 @@ layout: default
 </header>
 {% endif %}
 
-<div class="d-flex gap-2">
-  <button class="btn btn-primary fixed-bottom p-0" style="width: 48px; height: 48px; margin: 12px; left: auto;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-    <i class="bi bi-list-ul fs-4"></i>
-  </button>
-  <section class="flex-fill" data-bs-spy="scroll" data-bs-target="#toc">
+<div class="d-flex gap-3">
+  <section class="flex-fill"{% if page.toc %} data-bs-spy="scroll" data-bs-target="#toc"{% endif %}>
     {{ content }}
   </section>
   {% if page.toc %}
-  <div>
-    <div class="card sticky-top collapse" id="collapseExample" style="min-width: 240px; max-height: calc(100vh - 96px); top: 48px;">
-      <div class="card-header"><i class="bi bi-list-ul"></i> {{ page.toc_label | default: site.data.ui-text[site.locale].toc_label | default: "On this page" }}</div>
-      <nav id="toc" class="p-2 overflow-auto small">{% include toc.html class="nav nav-pills flex-column" submenu_class="nav nav-pills flex-column ms-4 pt-1" anchor_class="nav-link px-2 py-1" sanitize=true html=content h_min=1 h_max=6 skip_no_ids=true %}</nav>
-    </div>
+  <button class="btn btn-primary fixed-bottom p-0 m-3 d-block d-md-none" style="width: 32px; height: 32px; left: auto;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+    <i class="bi bi-list-ul fs-5"></i>
+  </button>
+  <div class="me-3 me-md-0 card offcanvas-md offcanvas-end flex-shrink-0 sticky-md-top" data-bs-scroll="true" data-bs-backdrop="false" id="collapseExample" style="width: 240px; max-height: calc(100vh - 96px); top: 48px;">
+    <div class="card-header"><i class="bi bi-list-ul"></i> {{ page.toc_label | default: site.data.ui-text[site.locale].toc_label | default: "On this page" }}</div>
+    <nav id="toc" class="p-2 overflow-auto small">{% include toc.html class="nav nav-pills flex-column" submenu_class="nav nav-pills flex-column ms-4 pt-1" anchor_class="nav-link px-2 py-1" sanitize=true html=content h_min=1 h_max=6 skip_no_ids=true %}</nav>
   </div>
   {% endif %}
 </div>
