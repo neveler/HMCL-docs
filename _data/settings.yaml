@@ -1,7 +1,7 @@
 appearance_color:
   type: radio
-  default: light
+  default: auto
   options:
+    - auto
     - light
     - dark
-    - auto

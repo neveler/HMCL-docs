@@ -1,17 +1,4 @@
 ---
 ---
 
-img {
-    max-width: 100%;
-}
-
-:target {
-    scroll-margin-top: 80px;
-}
-
-$font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Roboto", "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-$bootstrap-icons-font-dir: "../fonts" !default;
-
-@import "bootstrap/bootstrap";
-@import "syntax/syntax";
-@import "bootstrap-icons/bootstrap-icons";
+@import "theme";

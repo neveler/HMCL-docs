@@ -1,24 +1,8 @@
-window.addEventListener("DOMContentLoaded", function () {
+(function (global) {
+  var modeSwitcher = null;
   var activeModeIndex = 0;
   var modeKeys = ["light", "dark", "auto"];
   var modeLabels = ["亮色", "暗色", "自动"];
-
-  var menuList = document.querySelector("#navbar .navbar-nav");
-  var modeSwitcher = null;
-  if (menuList) {
-    var menuItem = document.createElement("li");
-    menuItem.className = "nav-item";
-    modeSwitcher = document.createElement("a");
-    modeSwitcher.className = "nav-link";
-    modeSwitcher.textContent = modeLabels[activeModeIndex];
-    modeSwitcher.href = "javascript:;";
-    modeSwitcher.onclick = function () {
-      var nextIndex = (activeModeIndex + 1) % modeKeys.length;
-      settings.set("appearance_color", modeKeys[nextIndex]);
-    }
-    menuItem.appendChild(modeSwitcher);
-    menuList.appendChild(menuItem);
-  }
   function applyTheme(mode) {
     var newIndex = modeKeys.indexOf(mode);
     if (newIndex < 0) newIndex = 0;
@@ -29,8 +13,7 @@ window.addEventListener("DOMContentLoaded", function () {
     }
     if (resolvedMode === "auto") {
       delete document.documentElement.dataset.bsTheme;
-    }
-    else {
+    } else {
       document.documentElement.dataset.bsTheme = resolvedMode;
     }
   }
@@ -41,4 +24,21 @@ window.addEventListener("DOMContentLoaded", function () {
   settings.onChange("appearance_skin_light", function () {
     settings.refresh("appearance_color");
   });
-});
+  global.addEventListener("DOMContentLoaded", function () {
+    var menuList = document.querySelector("#navbar .navbar-nav");
+    if (menuList) {
+      var menuItem = document.createElement("li");
+      menuItem.className = "nav-item";
+      modeSwitcher = document.createElement("a");
+      modeSwitcher.className = "nav-link";
+      modeSwitcher.textContent = modeLabels[activeModeIndex];
+      modeSwitcher.href = "javascript:;";
+      modeSwitcher.onclick = function () {
+        var nextIndex = (activeModeIndex + 1) % modeKeys.length;
+        settings.set("appearance_color", modeKeys[nextIndex]);
+      }
+      menuItem.appendChild(modeSwitcher);
+      menuList.appendChild(menuItem);
+    }
+  });
+})(window);

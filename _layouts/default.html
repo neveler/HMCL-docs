@@ -3,7 +3,7 @@ layout: compress
 ---
 
 <!DOCTYPE html>
-<html lang="{{ site.locale | default: 'en' }}" data-bs-theme="dark">
+<html lang="{{ site.locale | default: 'en' }}">
 
 <head>
   <meta charset="utf-8">
@@ -157,9 +157,9 @@ layout: compress
 
   {% unless site.atom_feed.hide %}<link href="{% if site.atom_feed.path %}{{ site.atom_feed.path }}{% else %}{{ '/feed.xml' | relative_url }}{% endif %}" type="application/atom+xml" rel="alternate" title="{{ site.title }} Feed">{% endunless %}
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="{{ '/assets/css/main.min.css' | relative_url }}" rel="stylesheet">
   <script src="{{ '/assets/js/settings.js' | relative_url }}"></script>
   <script src="{{ '/assets/js/theme.js' | relative_url }}"></script>
+  <link href="{{ '/assets/css/main.min.css' | relative_url }}" rel="stylesheet">
 </head>
 
 <body class="d-flex flex-column min-vh-100">

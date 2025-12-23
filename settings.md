@@ -9,7 +9,7 @@ data:
         title: 颜色模式
         description: 用于切换站点主题颜色模式。
         options:
+          auto: 自动
           light: 亮色
           dark: 暗色
-          auto: 自动
 ---
