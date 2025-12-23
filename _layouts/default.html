@@ -164,7 +164,7 @@ layout: compress
 
 <body class="d-flex flex-column min-vh-100">
   {% capture logo_path %}{{ site.logo }}{% endcapture %}
-  <header class="mb-4 border-bottom sticky-top z-3 bg-body">
+  <header class="border-bottom sticky-top z-3 bg-body">
     <nav class="navbar navbar-expand-sm">
       <div class="container-fluid">
         <a class="navbar-brand d-flex align-items-center gap-2" href="{{ '/' | relative_url }}" style="min-height: 64px;">
@@ -205,36 +205,36 @@ layout: compress
   </header>
 
   <main class="flex-fill">
-    <div class="container-fluid d-flex gap-3 align-items-start">
+    <div class="d-flex align-items-start">
       {% if page.sidebar and page.sidebar.nav %}
-      <aside class="z-2 ms-3 ms-xl-0 card offcanvas-xl offcanvas-start flex-shrink-0 sticky-xl-top overflow-auto" data-bs-backdrop="false" data-bs-scroll="true" id="sidebar" style="width: 240px; max-height: calc(100vh - 128px); top: 80px;">
-      {% for navname in page.sidebar.nav %}
-        {% assign navigation = site.data.navigation[navname] %}
-        {% for nav in navigation %}
-          {% if nav.url %}
-            <div class="list-group list-group-flush">
-              <a class="list-group-item{% if child.url == page.url %} active{% endif %}" href="{{ nav.url | relative_url }}">{{ nav.title }}</a>
-            </div>
-          {% else %}
-            <div class="card-header">{{ nav.title }}</div>
-          {% endif %}
-
-          {% if nav.children != null %}
-          <div class="list-group list-group-flush">
-            {% for child in nav.children %}
-              <a class="list-group-item{% if child.url == page.url %} active{% endif %}" href="{{ child.url | relative_url }}">{{ child.title }}</a>
-            {% endfor %}
-          </div>
-          {% endif %}
+      <aside class="z-2 offcanvas-xl offcanvas-start flex-shrink-0 sticky-xl-top overflow-auto container-fluid border-end" data-bs-backdrop="false" data-bs-scroll="true" id="sidebar" style="width: 240px; height: calc(100vh - 80px); top: 80px;">
+        <div class="m-2 py-2 border-bottom"><strong><i class="bi bi-list"></i> 侧边导航</strong></div>
+        <nav class="nav nav-pills flex-column">
+        {% for navname in page.sidebar.nav %}
+          {% assign navigation = site.data.navigation[navname] %}
+          {% for nav in navigation %}
+            {% if nav.url %}
+              <a class="nav-link{% if child.url == page.url %} active{% endif %}" href="{{ nav.url | relative_url }}">{{ nav.title }}</a>
+            {% else %}
+              <span class="nav-link text-body"><strong>{{ nav.title }}</strong></span>
+            {% endif %}
+            {% if nav.children != null %}
+            <nav class="nav nav-pills flex-column small">
+              {% for child in nav.children %}
+              <a class="nav-link{% if child.url == page.url %} active{% endif %}" href="{{ child.url | relative_url }}">{{ child.title }}</a>
+              {% endfor %}
+            </nav>
+            {% endif %}
+          {% endfor %}
         {% endfor %}
-      {% endfor %}
+        </nav>
       </aside>
       {% endif %}
       <article class="flex-fill">{{ content }}</article>
     </div>
   </main>
 
-  <footer class="mt-4 bg-body-tertiary border-top">
+  <footer class="bg-body-tertiary border-top">
     <div class="container-fluid py-3 py-md-4 text-body-secondary">
       <div class="small d-flex gap-2 flex-wrap justify-content-between">
         <div>
