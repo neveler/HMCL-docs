@@ -9,12 +9,17 @@ layout: default
 {% endif %}
 
 <div class="d-flex gap-2">
-  <section class="flex-fill">{{ content }}</section>
+  <button class="btn btn-primary fixed-bottom p-0" style="width: 48px; height: 48px; margin: 12px; left: auto;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+    <i class="bi bi-list-ul fs-4"></i>
+  </button>
+  <section class="flex-fill" data-bs-spy="scroll" data-bs-target="#toc">
+    {{ content }}
+  </section>
   {% if page.toc %}
   <div>
-    <div class="card sticky-top" style="min-width: 240px; max-height: calc(100vh - 96px); top: 48px;">
+    <div class="card sticky-top collapse" id="collapseExample" style="min-width: 240px; max-height: calc(100vh - 96px); top: 48px;">
       <div class="card-header"><i class="bi bi-list-ul"></i> {{ page.toc_label | default: site.data.ui-text[site.locale].toc_label | default: "On this page" }}</div>
-      <nav id="toc" class="p-2 overflow-auto">{% include toc.html class="nav nav-pills flex-column" submenu_class="nav nav-pills flex-column ms-3 py-2" anchor_class="nav-link px-2 py-1" sanitize=true html=content h_min=1 h_max=6 skip_no_ids=true %}</nav>
+      <nav id="toc" class="p-2 overflow-auto small">{% include toc.html class="nav nav-pills flex-column" submenu_class="nav nav-pills flex-column ms-4 pt-1" anchor_class="nav-link px-2 py-1" sanitize=true html=content h_min=1 h_max=6 skip_no_ids=true %}</nav>
     </div>
   </div>
   {% endif %}

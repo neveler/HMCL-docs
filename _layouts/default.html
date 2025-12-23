@@ -162,7 +162,7 @@ layout: compress
   <script src="{{ '/assets/js/theme.js' | relative_url }}"></script>
 </head>
 
-<body class="d-flex flex-column min-vh-100" data-bs-spy="scroll" data-bs-target="#toc">
+<body class="d-flex flex-column min-vh-100">
   {% capture logo_path %}{{ site.logo }}{% endcapture %}
   <header class="mb-4 border-bottom">
     <nav class="navbar navbar-expand-sm">
@@ -176,7 +176,7 @@ layout: compress
             <img width="32" height="32" src="{{ logo_path | relative_url }}"
               alt="{{ site.masthead_title | default: site.title }}">
             {% endunless %}
-            {{ site.masthead_title | default: site.title | escape_once | strip }}
+            <strong>{{ site.masthead_title | default: site.title | escape_once | strip }}</strong>
           </a>
         </div>
         <button class="btn btn-sm d-sm-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbar">
