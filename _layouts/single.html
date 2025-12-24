@@ -9,13 +9,15 @@ layout: default
 {% endif %}
 
 <div class="d-flex">
-  <section class="flex-fill container-fluid"{% if page.toc %} data-bs-spy="scroll" data-bs-target="#tocnav"{% endif %}>
+  <section class="container-fluid"{% if page.toc %} data-bs-spy="scroll" data-bs-target="#tocnav"{% endif %}>
     {{ content }}
   </section>
   {% if page.toc %}
-  <div class="z-2 offcanvas-md offcanvas-end flex-shrink-0 sticky-md-top container-fluid border border-end-0 border-bottom-0 d-flex flex-column" data-bs-scroll="true" data-bs-backdrop="false" id="toc" style="width: 240px; height: calc(100vh - 80px); top: 80px;">
-    <div class="m-2 py-2 border-bottom"><strong><i class="bi bi-list-ul"></i> {{ page.toc_label | default: site.data.ui-text[site.locale].toc_label | default: "On this page" }}</strong></div>
-    <nav id="tocnav" class="overflow-auto small flex-fill">{% include toc.html class="nav nav-pills flex-column" submenu_class="nav nav-pills flex-column ms-4 pt-1" anchor_class="nav-link px-2 py-1" sanitize=true html=content h_min=1 h_max=6 skip_no_ids=true %}</nav>
+  <div class="z-2 offcanvas-md offcanvas-end flex-shrink-0 sticky-md-top border-top border-start d-flex flex-column" data-bs-scroll="true" data-bs-backdrop="false" id="toc" style="width: 240px; height: calc(100vh - 80px); top: 80px;">
+    <div class="container-fluid py-2 border-bottom fw-semibold">目录</div>
+    <nav id="tocnav" class="overflow-auto small flex-fill">
+      {% include toc.html class="list-unstyled list-group-item p-0 border-0 list-group small" submenu_class="list-unstyled list-group-item border-0 py-0 pe-0 list-group" anchor_class="border-0 list-group-item list-group-item-action" sanitize=true html=content h_min=1 h_max=6 skip_no_ids=true %}
+    </nav>
   </div>
   {% endif %}
 </div>
