@@ -18,7 +18,7 @@ module Jekyll
       def initialize(site)
         @site = site
         @relative_url_cache = site.filter_cache[:relative_url] ||= {}
-        @sanitized_baseurl = ensure_leading_slash(site.config["baseurl"] || "")
+        @sanitized_baseurl = site.config["baseurl"].is_a?(String) ? ensure_leading_slash(site.config["baseurl"].chomp("/")) : ""
       end
 
       # @param [String] link
