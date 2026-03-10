@@ -17,12 +17,12 @@
 </script>
 
 <!-- For all browsers -->
-<link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
-<link rel="stylesheet" href="{{ '/assets/lib/fontawesome/css/all.min.css' | relative_url }}">
-<noscript><link rel="stylesheet" href="{{ '/assets/lib/fontawesome/css/all.min.css' | relative_url }}"></noscript>
+<link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}{{ '/assets/css/main.scss' | hash_file: true }}">
+<link rel="stylesheet" href="{{ '/assets/lib/fontawesome/css/all.min.css' | hash_file | relative_url }}">
+<noscript><link rel="stylesheet" href="{{ '/assets/lib/fontawesome/css/all.min.css' | hash_file | relative_url }}"></noscript>
 
 {% if site.head_scripts %}
   {% for script in site.head_scripts %}
-    <script src="{{ script | relative_url }}"></script>
+    <script src="{{ script | hash_file | relative_url }}"></script>
   {% endfor %}
 {% endif %}
