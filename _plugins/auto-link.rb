@@ -28,12 +28,9 @@ module Jekyll
         "/#{input}"
       end
 
-      def self.hash_file(file)
-        if file.is_a? Jekyll::StaticFile
-          Digest::SHA256.file(file.path).hexdigest
-        else
-          Digest::SHA256.hexdigest(file.output)
-        end
+      def self.hash_file(file, short = true)
+        file_hash = file.is_a?(Jekyll::StaticFile) ? Digest::SHA256.file(file.path).hexdigest : Digest::SHA256.hexdigest(file.output).slice(0, 8)
+        short ? file_hash&.slice(0, 8) : file_hash
       end
     end
 
