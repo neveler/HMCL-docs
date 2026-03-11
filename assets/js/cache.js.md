@@ -15,6 +15,14 @@ self.addEventListener("fetch", (event) => {
   const request = event.request;
   const url = new URL(request.url);
 
+  const pathname = url.pathname;
+  if (pathname.endsWith(".woff2")) {
+    const referrer = new URL(request.referrer);
+    const hash = referrer.searchParams.get("hash");
+    if (hash === null) return;
+    url.searchParams.set("hash", "referrer:" + hash);
+  }
+
   const hash = url.searchParams.get("hash");
   if (hash === null) return;
 

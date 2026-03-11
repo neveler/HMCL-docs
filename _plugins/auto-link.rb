@@ -13,8 +13,10 @@ module Jekyll
           relative_path = link_uri.path[1..].strip
           relative_path_with_leading_slash = Jekyll::PathManager.join("", relative_path)
           site.each_site_file do |file|
-            if [relative_path, relative_path_with_leading_slash].include?(file.url)
-              return @@find_file_cache[link] = file
+            if [file.relative_path, file.url].any? { |v| [relative_path, relative_path_with_leading_slash].include?(v) }
+              @@find_file_cache[file.url] = file
+              @@find_file_cache[file.relative_path] = file
+              return file
             end
           end
         end
@@ -26,12 +28,12 @@ module Jekyll
         "/#{input}"
       end
 
-      def self.hash_file(path)
-        Digest::SHA256.file(path).hexdigest
-      end
-
-      def self.hash_text(text)
-        Digest::SHA256.hexdigest(text)
+      def self.hash_file(file)
+        if file.is_a? Jekyll::StaticFile
+          Digest::SHA256.file(file.path).hexdigest
+        else
+          Digest::SHA256.hexdigest(file.output)
+        end
       end
     end
 
@@ -40,11 +42,7 @@ module Jekyll
         site = @context.registers[:site]
         file = FindFile::process(site, link)
         return nil if file.nil?
-        if file.is_a? Jekyll::StaticFile
-          FindFile::hash_file(file.path)
-        else
-          FindFile::hash_text(file.output)
-        end
+        FindFile::hash_file(file)
       end
     end
 
@@ -82,11 +80,7 @@ module Jekyll
 
       site.each_site_file do |file|
         next if file.url.end_with?("/") || file.url.end_with?(".html")
-        if file.is_a? Jekyll::StaticFile
-          file_hash_map[file.url] = FindFile::hash_file(file.path)
-        else
-          file_hash_map[file.url] = FindFile::hash_text(file.output)
-        end
+        file_hash_map[file.url] = FindFile::hash_file(file)
       end
 
       (site.pages + site.documents).each do |doc|
