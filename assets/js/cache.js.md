@@ -1,12 +1,13 @@
 ---
-layout: null
+layout: code
 permalink: /cache.js
 ---
 
+```javascript
 const CACHE_VERSION = 1;
 const CACHE_NAME = "assets-cache-" + CACHE_VERSION;
 
-self.addEventListener("install", (event) => {
+self.addEventListener("install", () => {
   self.skipWaiting();
 });
 
@@ -35,3 +36,4 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
+```
