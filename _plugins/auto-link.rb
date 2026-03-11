@@ -60,15 +60,11 @@ module Jekyll
           file = FindFile::process(site, item[attribute])
           next if file.nil?
 
-          unless relative_url_cache.key?(file.relative_path)
-            relative_path_uri = Addressable::URI.parse(file.relative_path)
-            if relative_path_uri&.absolute?
-              relative_url_cache[file.relative_path] = file.relative_path
-            else
-              relative_url_cache[file.relative_path] = FindFile::ensure_leading_slash(file.relative_path).prepend(sanitized_baseurl)
-            end
-            item[attribute] = relative_url_cache[file.relative_path].dup
-          end
+          next item[attribute] = relative_url_cache[file.url].dup if relative_url_cache.key?(file.url)
+          next item[attribute] = relative_url_cache[file.relative_path].dup if relative_url_cache.key?(file.relative_path)
+
+          relative_url_cache[file.relative_path] = relative_url_cache[file.url] = FindFile::ensure_leading_slash(file.url).prepend(sanitized_baseurl)
+          item[attribute] = relative_url_cache[file.relative_path].dup
         end
       end
       doc.content = fragment.to_html
