@@ -10,5 +10,5 @@ layout: single
 
 {% if jekyll.environment == 'production' and page.hits %}
 <script src="{{ '/assets/js/hits.js' | relative_url }}"></script>
-<script>loadHits("{{ page.url | absolute_url | url_encode }}");</script>
+<script>hits("{{ page.url | absolute_url | url_encode }}");</script>
 {% endif %}
