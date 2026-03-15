@@ -11,6 +11,11 @@ blockquote {
   word-break: break-word;
 }
 
+header + .page__content > *:first-child,
+.page__content > aside.sidebar__right + * {
+  margin-top: 0 !important;
+}
+
 .notice ul:first-child {
   margin-top: 0;
 }
