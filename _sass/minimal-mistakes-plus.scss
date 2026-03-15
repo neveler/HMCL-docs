@@ -18,3 +18,9 @@ blockquote {
   position: sticky;
   margin: 0 !important;
 }
+
+table.setting-multi-radio td {
+  border: 0;
+  text-align: center;
+  border-left: 1px solid mix(#000, $border-color, 25%);
+}
