@@ -27,7 +27,7 @@
     const hitsUrl = new URL("https://hits.zkitefly.eu.org");
     hitsUrl.searchParams.set("tag", tag);
     fetch(hitsUrl, { method: "HEAD" }).then((response) => {
-      if (response.status === 200) return;
+      if (response.status !== 200) return;
       const { headers } = response;
       const total = headers.get("X-Total-Hits");
       const today = headers.get("X-Today-Hits");
