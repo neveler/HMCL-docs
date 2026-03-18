@@ -25,14 +25,16 @@ data:
           light: 亮色
           dark: 暗色
         options:
-          default: 默认
-          air: 天空
-          aqua: 水蓝
-          contrast: 高对比
-          dark: 暗色
-          dirt: 泥土
-          neon: 霓虹
-          mint: 薄荷
-          plum: 梅紫
-          sunrise: 日出
+          default: 默认 (Default)
+          air: 天空 (Air)
+          aqua: 水蓝 (Aque)
+          contrast: 高对比 (Contrast)
+          dark: 暗色 (Dark)
+          dirt: 泥土 (Dirt)
+          neon: 霓虹 (Neno)
+          mint: 薄荷 (Mint)
+          plum: 梅紫 (Plum)
+          sunrise: 日出 (Sunrise)
+          catppuccin_latte: Catppuccin Latte
+          catppuccin_mocha: Catppuccin Mocha
 ---
