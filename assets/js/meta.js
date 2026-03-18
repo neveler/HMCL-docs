@@ -24,6 +24,7 @@
     metas.append(meta);
   };
   window.hits = (tag) => {
+    if (settings.get("miscellaneous_hits", "enable") === "disable") return;
     const hitsUrl = new URL("https://hits.zkitefly.eu.org");
     hitsUrl.searchParams.set("tag", tag);
     fetch(hitsUrl, { method: "HEAD" }).then((response) => {

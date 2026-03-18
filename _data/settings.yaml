@@ -33,3 +33,9 @@ appearance_skin_dark:
     - mint
     - plum
     - sunrise
+miscellaneous_hits:
+  type: radio
+  default: enable
+  options:
+    - enable
+    - disable

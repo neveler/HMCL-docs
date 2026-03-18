@@ -40,4 +40,12 @@ data:
           mint: 薄荷
           plum: 梅紫
           sunrise: 日出
+  - title: 杂项
+    settings:
+      miscellaneous_hits:
+        title: 访问统计服务
+        description: 用于统计页面访问量的服务。
+        options:
+          enable: 启用
+          disable: 禁用
 ---
