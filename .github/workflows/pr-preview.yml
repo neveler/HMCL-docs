@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Cache Refresh
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           key: pages-${{ github.run_id }}
           path: /home/runner/gh-pages
@@ -49,7 +49,7 @@ jobs:
     steps:
       - id: restore-pages
         name: Restore Pages
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           key: pages-${{ github.run_id }}
           path: /home/runner/gh-pages
@@ -68,7 +68,7 @@ jobs:
           done
           echo "[$(date)] Remove Preview PR${{ env.GITHUB_PR_NUMBER }}" > /home/runner/gh-pages/index.html
       - name: Save Pages
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           key: pages-${{ github.run_id }}
           path: /home/runner/gh-pages
@@ -214,7 +214,7 @@ jobs:
       artifact-id: ${{ steps.upload-site.outputs.artifact-id }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Merge PR
@@ -242,7 +242,7 @@ jobs:
           bundle exec jekyll build --trace --config _config.yml,_action.yml
       - id: upload-site
         name: Upload Site
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: site
           path: /home/runner/site
@@ -260,7 +260,7 @@ jobs:
     steps:
       - id: restore-pages
         name: Restore Pages
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           key: pages-${{ github.run_id }}
           path: /home/runner/gh-pages
@@ -271,7 +271,7 @@ jobs:
           rm -rf /home/runner/gh-pages/PR${{ env.GITHUB_PR_NUMBER }}
           grep -rlw 'PR${{ env.GITHUB_PR_NUMBER }}' /home/runner/gh-pages/data/refs | xargs -r sed -i '/\<PR${{ env.GITHUB_PR_NUMBER }}\>/d'
       - name: Merge Site
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: site
           path: /home/runner/gh-pages/PR${{ env.GITHUB_PR_NUMBER }}
@@ -305,11 +305,11 @@ jobs:
           name: github-pages
           path: /home/runner/gh-pages
       - name: Deploy Pages
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
         with:
           artifact_name: github-pages
       - name: Save Pages
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           key: pages-${{ github.run_id }}
           path: /home/runner/gh-pages
