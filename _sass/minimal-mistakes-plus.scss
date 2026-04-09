@@ -18,3 +18,18 @@ blockquote {
 .m0 {
   margin: 0 !important;
 }
+
+input[type="radio"] {
+  width: 0;
+  margin: 0;
+  margin-inline-end: 1.2em !important;
+  font-family: var(--fa-family-classic);
+}
+
+input[type="radio"]::before {
+  content: "\f111";
+}
+
+input[type="radio"]:checked::before {
+  content: "\f192";
+}
