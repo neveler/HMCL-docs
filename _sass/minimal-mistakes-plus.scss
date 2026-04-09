@@ -20,9 +20,9 @@ blockquote {
 }
 
 input[type="radio"] {
-  width: 0;
-  margin: 0;
-  margin-inline-end: 1.2em !important;
+  inline-size: 0 !important;
+  margin-block: 0 !important;
+  margin-inline: 0 1.2em !important;
   font-family: var(--fa-family-classic);
 }
 
