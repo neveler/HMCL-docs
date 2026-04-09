@@ -52,4 +52,28 @@ layout: single
   }
 </script>
 
-<style>.notice label input { display: inline }</style>
+<style>
+.notice label input {
+  display: inline
+}
+
+table.setting-multi-radio td {
+  border: 0;
+  text-align: center;
+}
+
+input[type="radio"] {
+  width: 0;
+  margin: 0;
+  margin-inline-end: 1em;
+  font-family: var(--fa-family-classic);
+}
+
+input[type="radio"]::before {
+  content: "\f111";
+}
+
+input[type="radio"]:checked::before {
+  content: "\f192";
+}
+</style>
