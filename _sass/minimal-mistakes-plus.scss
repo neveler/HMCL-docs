@@ -21,6 +21,7 @@ blockquote {
 
 input[type="radio"] {
   inline-size: 0 !important;
+  block-size: 1px !important;
   margin-block: 0 !important;
   margin-inline: 0 1.2em !important;
   font-family: var(--fa-family-classic);
